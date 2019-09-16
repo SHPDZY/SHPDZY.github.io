@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+Allow: /home/
+Allow: /archives/
+Allow: /record/
+Allow: /about/
+Disallow: /vendors/
+Disallow: /js/
+Disallow: /css/
+Disallow: /fonts/
+Disallow: /vendors/
+Disallow: /fancybox/
+Sitemap: http://9aiplay.com/sitemap.xml
+Sitemap: http://9aiplay.com/baidusitemap.xml
