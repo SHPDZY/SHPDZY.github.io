@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>张永的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="欢迎来到张永的个人博客，一个关注Android,H5前端,java后端技术分享，爱分享网络资源，分享学到的知识，分享生活的乐趣的网站。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="张永的个人博客">
+<meta property="og:url" content="http://9aiplay.com/page/2/index.html">
+<meta property="og:site_name" content="张永的个人博客">
+<meta property="og:description" content="欢迎来到张永的个人博客，一个关注Android,H5前端,java后端技术分享，爱分享网络资源，分享学到的知识，分享生活的乐趣的网站。">
+<meta property="og:locale" content="zh-Hans">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="张永的个人博客">
+<meta name="twitter:description" content="欢迎来到张永的个人博客，一个关注Android,H5前端,java后端技术分享，爱分享网络资源，分享学到的知识，分享生活的乐趣的网站。">
+  
+    <link rel="alternate" href="/atom.xml" title="张永的个人博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">张永的个人博客</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://9aiplay.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-java线程方法join" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/record/java线程方法join/" class="article-date">
+  <time datetime="2018-06-03T05:18:55.000Z" itemprop="datePublished">2018-06-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a>►<a class="article-category-link" href="/categories/Android/Java/">Java</a>►<a class="article-category-link" href="/categories/Android/Java/线程/">线程</a>►<a class="article-category-link" href="/categories/Android/Java/线程/join/">join</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/record/java线程方法join/">java线程方法join</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h2><p>　　Thread类中的join方法的主要作用就是同步，它可以使得线程之间的并行执行变为串行执行。具体看代码：</p>
+<pre><code>public class JoinTest {    
+    public static void main(String [] args) throws InterruptedException {
+        ThreadJoinTest t1 = new ThreadJoinTest(&quot;小明&quot;);
+        ThreadJoinTest t2 = new ThreadJoinTest(&quot;小东&quot;);
+        t1.start();       
+         /**join的意思是使得放弃当前线程的执行，并返回对应的线程，例如下面代码的意思就是：
+         程序在main线程中调用t1线程的join方法，则main线程放弃cpu控制权，
+         并返回t1线程继续执行直到线程t1执行完毕
+         所以结果是t1线程执行完后，才到主线程执行，
+         相当于在main线程中同步t1线程，t1执行完了，main线程才有执行的机会*/        
+        t1.join();
+        t2.start();
+    }
+
+}
+
+class ThreadJoinTest extends Thread{    
+
+    public ThreadJoinTest(String name){        
+        super(name);
+    }
+
+    @Override    
+    public void run(){        
+        for(int i=0;i&lt;1000;i++){
+            System.out.println(this.getName() + &quot;:&quot; + i);
+        }
+    }
+}</code></pre><p>　　上面程序结果是先打印完小明线程，在打印小东线程；　　</p>
+<p>　　上面注释也大概说明了join方法的作用：在A线程中调用了B线程的join()方法时，表示只有当B线程执行完毕时，A线程才能继续执行。注意，这里调用的join方法是没有传参的，join方法其实也可以传递一个参数给它的，具体看下面的简单例子：</p>
+<pre><code>public class JoinTest {    
+    public static void main(String [] args) throws InterruptedException {
+        ThreadJoinTest t1 = new ThreadJoinTest(&quot;小明&quot;);
+        ThreadJoinTest t2 = new ThreadJoinTest(&quot;小东&quot;);
+        t1.start();        
+        /**join方法可以传递参数，join(10)表示main线程会等待t1线程10毫秒，10毫秒过去后，
+         * main线程和t1线程之间执行顺序由串行执行变为普通的并行执行         */
+        t1.join(10);        
+        t2.start();
+    }
+
+}
+
+class ThreadJoinTest extends Thread{    
+
+    public ThreadJoinTest(String name){        
+        super(name);
+    }
+
+    @Override    
+    public void run(){        
+        for(int i=0;i&lt;1000;i++){
+            System.out.println(this.getName() + &quot;:&quot; + i);
+        }
+    }
+}</code></pre><p>　　上面代码结果是：程序执行前面10毫秒内打印的都是小明线程，10毫秒后，小明和小东程序交替打印。</p>
+<p>　　所以，join方法中如果传入参数，则表示这样的意思：如果A线程中掉用B线程的join(10)，则表示A线程会等待B线程执行10毫秒，10毫秒过后，A、B线程并行执行。需要注意的是，jdk规定，join(0)的意思不是A线程等待B线程0秒，而是A线程等待B线程无限时间，直到B线程执行完毕，即join(0)等价于join()。</p>
+<p>　　</p>
+<h2 id="join与start调用顺序问题"><a href="#join与start调用顺序问题" class="headerlink" title="join与start调用顺序问题"></a>join与start调用顺序问题</h2><p>　　上面的讨论大概知道了join的作用了，那么，入股 join在start前调用，会出现什么后果呢？先看下面的测试结果</p>
+<pre><code>public class JoinTest {    
+    public static void main(String [] args) throws InterruptedException {
+        ThreadJoinTest t1 = new ThreadJoinTest(&quot;小明&quot;);
+        ThreadJoinTest t2 = new ThreadJoinTest(&quot;小东&quot;);        
+        /**join方法可以在start方法前调用时，并不能起到同步的作用     */
+        t1.join();
+        t1.start();       
+        //Thread.yield();        
+        t2.start();
+    }
+
+}
+
+class ThreadJoinTest extends Thread{
+
+    public ThreadJoinTest(String name){
+        super(name);
+    }
+
+    @Override
+    public void run(){
+        for(int i=0;i&lt;1000;i++){
+            System.out.println(this.getName() + &quot;:&quot; + i);
+        }
+    }
+}</code></pre><p>上面代码执行结果是：小明和小东线程交替打印。</p>
+<p>所以得到以下结论：join方法必须在线程start方法调用之后调用才有意义。这个也很容易理解：如果一个线程都没有start，那它也就无法同步了。</p>
+<h2 id="join方法实现原理"><a href="#join方法实现原理" class="headerlink" title="join方法实现原理"></a>join方法实现原理</h2><p>　　有了上面的例子，我们大概知道join方法的作用了，那么，join方法实现的原理是什么呢？</p>
+<p>　　其实，join方法是通过调用线程的wait方法来达到同步的目的的。例如，A线程中调用了B线程的join方法，则相当于A线程调用了B线程的wait方法，在调用了B线程的wait方法后，A线程就会进入阻塞状态，具体看下面的源码：</p>
+<pre><code>public final synchronized void join(long millis)    throws InterruptedException {        
+    long base = System.currentTimeMillis();        
+    long now = 0;      
+
+    if (millis &lt; 0) {            
+        throw new IllegalArgumentException(&quot;timeout value is negative&quot;);
+    }       
+
+    if (millis == 0) {            
+        while (isAlive()) {
+            wait(0);
+        }
+    } else {            
+        while (isAlive()) {                
+            long delay = millis - now;                
+            if (delay &lt;= 0) {                    
+                break;
+            }
+            wait(delay); 
+                now = System.currentTimeMillis() - base;
+        }
+    }
+}</code></pre><p>　　从源码中可以看到：join方法的原理就是调用相应线程的wait方法进行等待操作的，例如A线程中调用了B线程的join方法，则相当于在A线程中调用了B线程的wait方法，当B线程执行完（或者到达等待时间），B线程会自动调用自身的notifyAll方法唤醒A线程，从而达到同步的目的。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://9aiplay.com/record/java线程方法join/" data-id="ck0m7gzot0017l0bg18u0v7ju" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/join/">join</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/线程/">线程</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-fragment和activity的区别" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/record/fragment和activity的区别/" class="article-date">
+  <time datetime="2018-05-19T04:22:25.000Z" itemprop="datePublished">2018-05-19</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a>►<a class="article-category-link" href="/categories/Android/Fragment/">Fragment</a>►<a class="article-category-link" href="/categories/Android/Fragment/Activity/">Activity</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/record/fragment和activity的区别/">fragment和activity的区别</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li><p>Fragment是到Android3.0+ 以后，Android新增了Fragments，在没有 Fragment 之前，一个屏幕只能放一个 Activity。这是一个起源时间大家要知道是什么时候开始引入的。</p>
+</li>
+<li><p>.Activity 代表了一个屏幕的主体,而Fragment可以作为Activity的一个组成元素。<br>一个Activity可以有若干个（0或n）Fragment构成。你可以把Fragment想象成Activity中的一个控件，只不过相对于一般控件，Fragment与Activity联系更为紧密，随着Activity的生命周期变化，Fragment也随之相应不同的生命周期函数。<br>Fragment 从功能上讲相当于一个子活动（Activity），它可以让多个活动放到同一个屏幕上，也就是对用户界面和功能的重用，因为对于大屏设备来说，纯粹的 Activity 有些力不从心。</p>
+</li>
+<li><p>Fragment 像是一个子活动，但是 Fragment 不是 Activity 的扩展，因为 Fragment 扩展自 android.app 中的 Object，而 Activity 是 Context 的子类。Fragment 有自己的视图层级结构，有自己的活动周期，还可以像活动一样响应后退按钮，Fragment 还有一个用作其初始化参数的包（Bundle），类似 Activity，Fragment 也可由系统自动保存并在以后还原。当系统还原 Fragment 时，它调用默认的构造函数（没有参数），然后将此Bundle还原到新创建的 Fragment 中，所以无论新建还是还原 Fragment，都要经过两个步骤：(1)调用默认构造函数(2)传入新的或者保存起来的Bundle。</p>
+</li>
+<li><p>一个Activity可以运行多个 Fragment，Fragment 切换时，由 FragmentTransaction 执行，切换时，上一个 Fragment 可以保存在后退栈中（Back Stack），这里的后退栈由 FragmentManager 来管理，注意 Fragment 和 Activity 的后退栈是有区别的：Activity 的后退栈由系统管理，而 Fragment 的后退栈由所在的Activity 管理。</p>
+</li>
+<li><p>Fragment不能脱离Activity而存在，只有Activity才能作为接收intent的载体。其实两者基本上是载体和组成元素的关系。</p>
+</li>
+<li><p>Fragment用来描述一些行为或一部分用户界面在一个Activity中，你可以合并多个fragment在一个单独的activity中建立多个UI面板，同时重用fragment在多个activity中.你可以认为fragment作为一个activity中的一节模块，fragment有自己的生命周期，接收自己的输入事件，你可以添加或移除从运行中的activity.一个fragment必须总是嵌入在一个activity中，同时fragment的生命周期受activity而影响，举个例子吧，当activity暂停，那么所有在这个activity的fragments将被destroy释放。然而当一个activity在运行比如resume时，你可以单独的操控每个fragment，比如添加或删除。不过因为Fragment和Activity的生命周期都比较复杂，我们分别对比下:创建一个fragment你必须创建一个Fragment的子类或存在的子类，比如类似下面的代码</p>
+</li>
+</ul>
+<pre><code>public static class AndroidFragment extends Fragment{
+
+   @Override
+   public View onCreateView(LayoutInflaterinflater, ViewGroup container,Bundle savedInstanceState) { 
+           return inflater.inflate(R.layout.android_fragment,container, false);
+    }
+
+   }</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://9aiplay.com/record/fragment和activity的区别/" data-id="ck0m7gzoj000yl0bgnv694h6s" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Activity/">Activity</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Fragment/">Fragment</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-AsyncTask源码分析" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/record/AsyncTask源码分析/" class="article-date">
+  <time datetime="2018-05-16T03:59:21.000Z" itemprop="datePublished">2018-05-16</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a>►<a class="article-category-link" href="/categories/Android/AsyncTask/">AsyncTask</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/record/AsyncTask源码分析/">AsyncTask源码分析</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>说到Android中的异步执行AsyncTask一定不陌生，今天就让我们来到它的内部一探究竟。</p>
+<h2 id="定义一个异步任务"><a href="#定义一个异步任务" class="headerlink" title="定义一个异步任务"></a>定义一个异步任务</h2><p>首先简单写一个使用例子：</p>
+<pre><code>private class MyAsyncTask extends AsyncTask&lt;String, Integer, String&gt; {
+
+    @Override
+    protected void onPreExecute() {
+      super.onPreExecute();
+    }
+
+    @Override
+    protected String doInBackground(String... strings) {
+      return null;
+    }
+
+    @Override
+    protected void onPostExecute(String s) {
+      super.onPostExecute(s);
+    }
+
+  }</code></pre><h2 id="执行该任务"><a href="#执行该任务" class="headerlink" title="执行该任务"></a>执行该任务</h2><pre><code>new MyAsyncTask().execute(&quot;&quot;);</code></pre><p>我们从任务的起点execute()看起：</p>
+<pre><code>@MainThread
+public final AsyncTask&lt;Params, Progress, Result&gt; execute(Params... params) {
+    return executeOnExecutor(sDefaultExecutor, params);
+}
+
+@MainThread
+public final AsyncTask&lt;Params, Progress, Result&gt; executeOnExecutor(Executor exec,
+        Params... params) {
+    if (mStatus != Status.PENDING) {
+        switch (mStatus) {
+            case RUNNING:
+                throw new IllegalStateException(&quot;Cannot execute task:&quot;
+                        + &quot; the task is already running.&quot;);
+            case FINISHED:
+                throw new IllegalStateException(&quot;Cannot execute task:&quot;
+                        + &quot; the task has already been executed &quot;
+                        + &quot;(a task can be executed only once)&quot;);
+        }
+    }
+
+    mStatus = Status.RUNNING;
+
+    onPreExecute();
+
+    mWorker.mParams = params;
+    exec.execute(mFuture);
+
+    return this;
+}</code></pre><p>可以看到这个方法必须在主线程中调用，方法中对状态过了一个过滤和变更，回调onPreExecute方法让我们在任务执行前进行一些操作。里面涉及到了2个关键变量mWorker和mFuture。<br>它们都是在构造函数那进行初始化：</p>
+<pre><code>public AsyncTask(@Nullable Looper callbackLooper) {
+    mHandler = callbackLooper == null || callbackLooper == Looper.getMainLooper()
+        ? getMainHandler()
+        : new Handler(callbackLooper);
+
+    mWorker = new WorkerRunnable&lt;Params, Result&gt;() {
+        public Result call() throws Exception {
+            mTaskInvoked.set(true);
+            Result result = null;
+            try {
+                Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+                //noinspection unchecked
+                result = doInBackground(mParams);
+                Binder.flushPendingCommands();
+            } catch (Throwable tr) {
+                mCancelled.set(true);
+                throw tr;
+            } finally {
+                postResult(result);
+            }
+            return result;
+        }
+    };
+
+    mFuture = new FutureTask&lt;Result&gt;(mWorker) {
+        @Override
+        protected void done() {
+            try {
+                postResultIfNotInvoked(get());
+            } catch (InterruptedException e) {
+                android.util.Log.w(LOG_TAG, e);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(&quot;An error occurred while executing doInBackground()&quot;,
+                        e.getCause());
+            } catch (CancellationException e) {
+                postResultIfNotInvoked(null);
+            }
+        }
+    };
+}</code></pre><p>可以看到mWorker是WorkerRunnable的实例，而它实现了Callable<result>接口，并在call()方法中调用了doInBackground来处理任务并获取结果，最终通过postResult方法将结果送出：</result></p>
+<pre><code>   private Result postResult(Result result) {
+    Message message = getHandler().obtainMessage(MESSAGE_POST_RESULT,
+            new AsyncTaskResult&lt;Result&gt;(this, result));
+    message.sendToTarget();
+    return result;
+}</code></pre><p>还是那个熟悉的套路，通过Handler进行消息的发送，那么必须会有一个地方来进行消息的处理：</p>
+<pre><code>   private static class InternalHandler extends Handler {
+    public InternalHandler(Looper looper) {
+        super(looper);
+    }
+
+    @Override
+    public void handleMessage(Message msg) {
+        AsyncTaskResult&lt;?&gt; result = (AsyncTaskResult&lt;?&gt;) msg.obj;
+        switch (msg.what) {
+            case MESSAGE_POST_RESULT:
+                // There is only one result
+                result.mTask.finish(result.mData[0]);
+                break;
+            case MESSAGE_POST_PROGRESS:
+                result.mTask.onProgressUpdate(result.mData);
+                break;
+        }
+    }
+}
+
+   private void finish(Result result) {
+    if (isCancelled()) {
+        onCancelled(result);
+    } else {
+        onPostExecute(result);
+    }
+    mStatus = Status.FINISHED;
+}</code></pre><p>收到消息并在处理完毕后变更任务状态，将任务的处理结果回调出去。<br>而变量mFuture，它是FutureTask的实例，FutureTask是一个可取消的异步任务，它实现了Runnable和Future接口，并且可以包装Callable和Runnable对象然后交由Executor执行。这里WorkerRunnable作为参数被包装进了FutureTask。</p>
+<p>那么我们回过头来看看<code>exec.execute(mFuture)</code>方法：</p>
+<pre><code>private static volatile Executor sDefaultExecutor = SERIAL_EXECUTOR;
+
+public static final Executor SERIAL_EXECUTOR = new SerialExecutor();
+
+private static class SerialExecutor implements Executor {
+    final ArrayDeque&lt;Runnable&gt; mTasks = new ArrayDeque&lt;Runnable&gt;();
+    Runnable mActive;
+
+    public synchronized void execute(final Runnable r) {
+        mTasks.offer(new Runnable() {
+            public void run() {
+                try {
+                    r.run();
+                } finally {
+                    scheduleNext();
+                }
+            }
+        });
+        if (mActive == null) {
+            scheduleNext();
+        }
+    }
+
+    protected synchronized void scheduleNext() {
+        if ((mActive = mTasks.poll()) != null) {
+            THREAD_POOL_EXECUTOR.execute(mActive);
+        }
+    }
+}</code></pre><p>这里exec其实就是sDefaultExecutor，它是一个串行的线程池。当我们调用execute方法时，就会将上面提到了FutureTask加入到mTasks中。当任务执行完或者没有任务的时候就会执行scheduleNext方法，从mTasks中取出任务并交由THREAD_POOL_EXECUTOR进行处理。</p>
+<h2 id="关于THREAD-POOL-EXECUTOR："><a href="#关于THREAD-POOL-EXECUTOR：" class="headerlink" title="关于THREAD_POOL_EXECUTOR："></a>关于THREAD_POOL_EXECUTOR：</h2><pre><code>//CPU核数
+private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
+   //线程池核心线程数
+private static final int CORE_POOL_SIZE = Math.max(2, Math.min(CPU_COUNT - 1, 4));
+//线程池最大线程数
+private static final int MAXIMUM_POOL_SIZE = CPU_COUNT * 2 + 1;
+private static final int KEEP_ALIVE_SECONDS = 30;
+
+private static final ThreadFactory sThreadFactory = new ThreadFactory() {
+    private final AtomicInteger mCount = new AtomicInteger(1);
+
+    public Thread newThread(Runnable r) {
+        return new Thread(r, &quot;AsyncTask #&quot; + mCount.getAndIncrement());
+    }
+};
+
+private static final BlockingQueue&lt;Runnable&gt; sPoolWorkQueue = new LinkedBlockingQueue&lt;Runnable&gt;(128);
+
+public static final Executor THREAD_POOL_EXECUTOR;
+
+static {
+    ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
+            CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_SECONDS, TimeUnit.SECONDS,
+            sPoolWorkQueue, sThreadFactory);
+    threadPoolExecutor.allowCoreThreadTimeOut(true);
+    THREAD_POOL_EXECUTOR = threadPoolExecutor;
+}</code></pre><p>可以看到THREAD_POOL_EXECUTOR是一个线程池，也是AsyncTask真正的执行者。<br>如果想要实现并行效果，我们可以通过调用  </p>
+<pre><code>public final AsyncTask&lt;Params, Progress, Result&gt; executeOnExecutor(Executor exec, Params... params)， </code></pre><p>定义一个并行执行的Executor即可。<br>至此便是AsyncTask所有的执行流程。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://9aiplay.com/record/AsyncTask源码分析/" data-id="ck0m7gzom0012l0bgdb28dl5k" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/AsyncTask/">AsyncTask</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Android-性能优化" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/record/Android-性能优化/" class="article-date">
+  <time datetime="2018-05-12T03:29:18.000Z" itemprop="datePublished">2018-05-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a>►<a class="article-category-link" href="/categories/Android/性能优化/">性能优化</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/record/Android-性能优化/">转载:Android 性能优化</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>原文作者：鸿洋<br>原文地址：<a href="https://mp.weixin.qq.com/s?__biz=MzAxMTI4MTkwNQ==&mid=2650824552&idx=1&sn=a634748d786072ecb083e46f27362d87&chksm=80b78bf6b7c002e09b949b7fbc14b9ae0eb97d8794aca6fa6d42f80afcd27d07947641bab083&scene=21#wechat_redirect" title="原文" target="_blank" rel="noopener">点我跳转原文</a></p>
+<hr>
+<p>一般情况下，我们谈性能优化基本上会从以下几个方面：</p>
+<ul>
+<li>App启动速度优化</li>
+<li>UI流畅度优化</li>
+<li>内存优化</li>
+<li>apk瘦身</li>
+<li>电量优化</li>
+</ul>
+<p>还有些网络速度优化、以及特定类型app的一些针对性的优化，比如播放器起播速度等…</p>
+<p>我们重点谈论上面5个方面。</p>
+<p>性能优化正常的流程是，发现自己某方面与竞品差距比较大，比如UI渲染速度，需要通过某种方式去发现为什么比别人慢，往往需要利用一些工具，然后可以做一些针对性的调优（代码优化、实现方式改变等），当然了在调优的过程中会有一些通用性的调优方式可以帮助你。</p>
+<p>所以本文从共性的角度来看，主要介绍的就是针对以上5个方面的检测工具以及调优方式了。</p>
+<h2 id="App启动速度优化"><a href="#App启动速度优化" class="headerlink" title="App启动速度优化"></a>App启动速度优化</h2><p>对于App启动速度优化，一般情况下我们会利用主题去防止出现白屏；针对启动速度慢，需要尽可能减少Application的onCreate中所要做的事情，比如一些不重要的SDK延迟或者异步加载；多进程情况下一定要可以在onCreate中去区分进程做一些初始化工作；部分将要使用到的类异步加载；还有针对multidex专门做优化的（当然这个随着5.0以上的设备越来越多，影响倒是没有那么大了）。</p>
+<p>下面针对各个方面推荐一些文章：</p>
+<ul>
+<li><p>Android性能优化（一）之启动加速35%<br><a href="http://www.jianshu.com/p/f5514b1a826c" target="_blank" rel="noopener">http://www.jianshu.com/p/f5514b1a826c</a></p>
+</li>
+<li><p>Android冷启动白屏解析，带你一步步分析和解决问题<br><a href="http://blog.csdn.net/guolin_blog/article/details/51019856" target="_blank" rel="noopener">http://blog.csdn.net/guolin_blog/article/details/51019856</a></p>
+</li>
+<li><p>Android APP启动优化<br><a href="http://wuxiaolong.me/2017/03/13/appStart/" target="_blank" rel="noopener">http://wuxiaolong.me/2017/03/13/appStart/</a>  </p>
+</li>
+<li><p>App启动速度优化之耗时检测处理<br><a href="http://www.jianshu.com/p/a0e242d57360" target="_blank" rel="noopener">http://www.jianshu.com/p/a0e242d57360</a></p>
+</li>
+</ul>
+<p>上面几篇文章基本上描述了应用的启动流程，如何优化白屏，以及一些SDK的懒加载等等…</p>
+<ul>
+<li><p>美团Android DEX自动拆包及动态加载简介，<br><a href="https://tech.meituan.com/mt-android-auto-split-dex.html" target="_blank" rel="noopener">https://tech.meituan.com/mt-android-auto-split-dex.html</a></p>
+</li>
+<li><p>Android MultiDex初次启动APP优化，<br><a href="http://blog.csdn.net/synaric/article/details/53540760" target="_blank" rel="noopener">http://blog.csdn.net/synaric/article/details/53540760</a></p>
+</li>
+<li><p>其实你不知道MultiDex到底有多坑，<br><a href="http://t.cn/RjjhD95" target="_blank" rel="noopener">http://t.cn/RjjhD95</a></p>
+</li>
+</ul>
+<p>这3篇可以帮助你对multidex做一定的了解，以及提供了优化方案供参考。</p>
+<p>当然了，在检测启动优化上，除了利用adb命令去检测总时间，还有就是去发现耗时的方法，可以利用TraceView，或者打开StrictMode，如果你喜欢使用Log，还可以去使用hugo，或者自己写一个类似的AOP日志框架。</p>
+<p>关于TraceView的使用可以参考：</p>
+<ul>
+<li><p>TraceView 简介及其案例实战，<br><a href="https://www.cnblogs.com/sunzn/p/3192231.html" target="_blank" rel="noopener">https://www.cnblogs.com/sunzn/p/3192231.html</a></p>
+</li>
+<li><p>使用 TraceView 找到卡顿的元凶，<br><a href="http://blog.csdn.net/u011240877/article/details/54347396" target="_blank" rel="noopener">http://blog.csdn.net/u011240877/article/details/54347396</a></p>
+</li>
+<li><p>Android App优化之提升你的App启动速度之实例挑战，<br><a href="http://www.jianshu.com/p/4f10c9a10ac9" target="_blank" rel="noopener">http://www.jianshu.com/p/4f10c9a10ac9</a></p>
+</li>
+</ul>
+<p>StrictMode比较简单，就不描述了，hugo是Jake大神的一个开源库，主要是利用aspectJ，源码很少，也比较简单，不过使用起来还不错，直接看readme就够了，感兴趣可以看下~<br><a href="https://github.com/JakeWharton/hugo" target="_blank" rel="noopener">https://github.com/JakeWharton/hugo</a></p>
+<h2 id="UI流畅度优化"><a href="#UI流畅度优化" class="headerlink" title="UI流畅度优化"></a>UI流畅度优化</h2><p>谈到UI流畅度，一般就是不要在主进程去做耗时的操作，提升UI的绘制速度（减少View的布局层级，避免过渡绘制等）…TraceView、Lint、Hugo、StrictMode等…</p>
+<p>这里很容易想起Google在15年初google发布了Android性能优化典范，还好视频还被我找到了，文末有下载…</p>
+<p>对于优化方案可参考：</p>
+<ul>
+<li><p>Android性能优化（二）之布局优化面面观<br><a href="http://www.jianshu.com/p/4f44a178c547" target="_blank" rel="noopener">http://www.jianshu.com/p/4f44a178c547</a></p>
+</li>
+<li><p>Android UI性能优化实战 识别绘制中的性能问题<br><a href="http://blog.csdn.net/lmj623565791/article/details/45556391/" target="_blank" rel="noopener">http://blog.csdn.net/lmj623565791/article/details/45556391/</a></p>
+</li>
+<li><p>性能优化之布局优化<br><a href="http://www.trinea.cn/android/layout-performance/" target="_blank" rel="noopener">http://www.trinea.cn/android/layout-performance/</a></p>
+</li>
+<li><p>Android性能调优<br><a href="http://www.trinea.cn/android/android-performance-demo/" target="_blank" rel="noopener">http://www.trinea.cn/android/android-performance-demo/</a></p>
+</li>
+</ul>
+<p>当然了对于UI卡顿，不可避免的要引入检测的方案：</p>
+<p>一般有监听Looper的日志</p>
+<p>利用Choreographer</p>
+<p>可参考我之前编写的：<br><a href="https://mp.weixin.qq.com/s?__biz=MzAxMTI4MTkwNQ==&mid=2650822205&idx=1&sn=6b8e78bc1d71eb79a199667cf132acf7&chksm=80b782a3b7c00bb5c12437556fca68136c75409855e9252e395b545621319edf23959942b67c&scene=21#wechat_redirect" title="            Android UI性能优化 检测应用中的UI卡" target="_blank" rel="noopener">Android UI性能优化 检测应用中的UI卡</a></p>
+<p>当然也相应的有一些开源工具：</p>
+<p><a href="https://github.com/markzhai/AndroidPerformanceMonitor" target="_blank" rel="noopener">https://github.com/markzhai/AndroidPerformanceMonitor</a> [方式1]</p>
+<p><a href="https://github.com/wasabeef/Takt" target="_blank" rel="noopener">https://github.com/wasabeef/Takt</a> [方式2]</p>
+<p><a href="https://github.com/friendlyrobotnyc/TinyDancer" target="_blank" rel="noopener">https://github.com/friendlyrobotnyc/TinyDancer</a> [方式2]</p>
+<h2 id="内存优化"><a href="#内存优化" class="headerlink" title="内存优化"></a>内存优化</h2><p>内存优化那么主要就是去消除应用中的内存泄露、避免内存抖动；常用工具就是AS自带的内存检测，可以很好的发现内存抖动；leakcanary可以非常方便的帮助我们发现内存泄露；MAT可以做更多的内存分析。</p>
+<p>当然了，你还可以了解一些内存相关的基础知识。</p>
+<ul>
+<li><p>Android性能优化（三）之内存管理<br><a href="http://www.jianshu.com/p/c4b283848970" target="_blank" rel="noopener">http://www.jianshu.com/p/c4b283848970</a></p>
+</li>
+<li><p>Android性能优化第（二）篇—Memory Monitor检测内存泄露<br><a href="http://www.jianshu.com/p/ef9081050f5c" target="_blank" rel="noopener">http://www.jianshu.com/p/ef9081050f5c</a></p>
+</li>
+<li><p>内存泄露实例分析 – Android内存优化第四弹<br><a href="http://www.jianshu.com/p/cbe2ee08ca02" target="_blank" rel="noopener">http://www.jianshu.com/p/cbe2ee08ca02</a></p>
+</li>
+<li><p>Android最佳性能实践(一)——合理管理内存<br><a href="http://blog.csdn.net/guolin_blog/article/details/42238627" target="_blank" rel="noopener">http://blog.csdn.net/guolin_blog/article/details/42238627</a></p>
+</li>
+<li><p>Android最佳性能实践(二)——分析内存的使用情况<br><a href="http://blog.csdn.net/guolin_blog/article/details/42238633" target="_blank" rel="noopener">http://blog.csdn.net/guolin_blog/article/details/42238633</a></p>
+</li>
+<li><p>Android性能优化-内存泄漏的8个Case<br><a href="https://mp.weixin.qq.com/s?__biz=MzAxMTI4MTkwNQ==&amp;mid=2650822597&amp;idx=1&amp;sn=462b116f97623f239ecf667d3bdef446&amp;chksm=80b7835bb7c00a4d4cbc9f7e19829d9a99f3cf58c1bc43dace16ffec58c98668927c9fa8dcda&amp;scene=21#wechat_redirect" target="_blank" rel="noopener">https://mp.weixin.qq.com/s?__biz=MzAxMTI4MTkwNQ==&amp;mid=2650822597&amp;idx=1&amp;sn=462b116f97623f239ecf667d3bdef446&amp;chksm=80b7835bb7c00a4d4cbc9f7e19829d9a99f3cf58c1bc43dace16ffec58c98668927c9fa8dcda&amp;scene=21#wechat_redirect</a></p>
+</li>
+<li><p>Android 内存优化总结&amp;实践<br><a href="https://mp.weixin.qq.com/s/2MsEAR9pQfMr1Sfs7cPdWQ" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/2MsEAR9pQfMr1Sfs7cPdWQ</a></p>
+</li>
+<li><p>Android内存优化之OOM<br><a href="http://hukai.me/android-performance-oom/" target="_blank" rel="noopener">http://hukai.me/android-performance-oom/</a></p>
+</li>
+<li><p>Android应用内存泄露分析、改善经验总结<br><a href="https://zhuanlan.zhihu.com/p/20831913" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/20831913</a></p>
+</li>
+<li><p>内存泄露从入门到精通三部曲之基础知识篇<br><a href="http://dev.qq.com/topic/59152c9029d8be2a14b64dae" target="_blank" rel="noopener">http://dev.qq.com/topic/59152c9029d8be2a14b64dae</a></p>
+</li>
+<li><p>内存泄露从入门到精通三部曲之排查方法篇<br><a href="http://dev.qq.com/topic/591522d9142eee2b6b9735a2" target="_blank" rel="noopener">http://dev.qq.com/topic/591522d9142eee2b6b9735a2</a></p>
+</li>
+<li><p>手把手教你在Android Studio 3.0上分析内存泄漏<br><a href="https://mp.weixin.qq.com/s?__biz=MzAxMTI4MTkwNQ==&amp;mid=2650824544&amp;idx=1&amp;sn=2fc3cc16806bd1ddd9902ccef2cd12f5&amp;chksm=80b78bfeb7c002e822314661aa0df8e8d7981fb2ff3bc362c129bbf2952a87ff59a6213b821c&amp;scene=21#wechat_redirect" target="_blank" rel="noopener">https://mp.weixin.qq.com/s?__biz=MzAxMTI4MTkwNQ==&amp;mid=2650824544&amp;idx=1&amp;sn=2fc3cc16806bd1ddd9902ccef2cd12f5&amp;chksm=80b78bfeb7c002e822314661aa0df8e8d7981fb2ff3bc362c129bbf2952a87ff59a6213b821c&amp;scene=21#wechat_redirect</a></p>
+</li>
+</ul>
+<h2 id="apk瘦身"><a href="#apk瘦身" class="headerlink" title="apk瘦身"></a>apk瘦身</h2><p>关于Apk瘦身，主要由以下几个方式：</p>
+<p>利用ProGuard压缩代码去除无用资源</p>
+<p>andresguard进一步压缩与混淆资源</p>
+<p>第三方开源库的瘦身，仅保留自己需要的部分</p>
+<p>极致的图片压缩与webp的使用</p>
+<p>合理配置去除不必要的配置，仅保留中文配置等…</p>
+<p>so的优化与配置，只保留一类so</p>
+<p>动态下发一些资源:字库、so、换肤包等；</p>
+<p>以上仅有7比较麻烦，需要服务端的配合，此外对于动态下发So，可以参考tinker对So热修复部分代码。</p>
+<p>其余都是常规方式，且1 ，5，6都比较简单，build.gradle最下配置即可，当然了也有一些参考文章：</p>
+<pre><code>App瘦身最佳实践
+
+http://www.jianshu.com/p/8f14679809b3#
+
+Android APP终极瘦身指南
+
+http://t.cn/RGjNpam
+
+Android性能优化（十）之App瘦身攻略
+
+http://www.jianshu.com/p/99f3c09982d4
+
+[Android技术专题]APK瘦身看这一篇文章就够了
+
+http://www.jianshu.com/p/6be4f98162d7
+
+安装包立减1M--微信Android资源混淆打包工具
+
+http://t.cn/RjjVe4f
+
+爱奇艺Android移动客户端app瘦身经验
+
+http://t.cn/RjjfzrY
+
+Android Webp 完全解析 快来缩小apk的大小吧
+
+App优化攻略-用TextView显示图片
+
+Android IconFont全攻略</code></pre><h2 id="电量优化"><a href="#电量优化" class="headerlink" title="电量优化"></a>电量优化</h2><p>电量优化说实在的关注度较低，一般情况就是合理的使用一些传感器、谨慎的使用Wake Lock、减少后台的不要的操作等…检测可以利用battery-historian </p>
+<pre><code>Android性能优化（九）之不可忽视的电量
+
+http://www.jianshu.com/p/5d83d8649c98
+
+Android性能优化之电量篇
+
+http://hukai.me/android-performance-battery/
+
+Android性能优化-电量优化
+
+Android性能优化系列之电量优化
+
+http://blog.csdn.net/u012124438/article/details/74617649
+
+Android App优化之电池省着用
+
+http://www.jianshu.com/p/c55ef05c0047
+
+https://github.com/google/battery-historian</code></pre><p>好了，大家可以将每个方案的所采用的实际的优化策略记录下来，对每种方式提到的工具一定要自己去体验，用起来肯定不会有多么的困难，实操起来印象会更加深刻。</p>
+<p>性能优化并不困难，重要的还是要去实际的去操作一把，基本上也是面试常见的问题了。</p>
+<p>最后，好文非常多，本文希望仅起到抛砖引入的效果，感谢所有作者~</p>
+<p>想起来了16年MDCC上明云凶做过一个性能优化的分享，所以每次谈到性能优化我都能想到当年演讲的ppt。</p>
+<p>这里提供一下该ppt的下载以及Google的性能优化典范视频，链接：<a href="https://pan.baidu.com/s/1kVHyCUb，懒得复制的可以公众号内回复1118即可。" target="_blank" rel="noopener">https://pan.baidu.com/s/1kVHyCUb，懒得复制的可以公众号内回复1118即可。</a></p>
+<p>对了，腾讯有个非常强大的手机上的“集成调测环境”，就是手机上的软件，可以用于性能检测，叫GT。<br><a href="http://gt.tencent.com/download.html" target="_blank" rel="noopener">http://gt.tencent.com/download.html</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://9aiplay.com/record/Android-性能优化/" data-id="ck0m7gznq0008l0bgk9jcidkv" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/性能优化/">性能优化</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Android-ADB常用命令" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/record/Android-ADB常用命令/" class="article-date">
+  <time datetime="2018-05-08T06:30:05.000Z" itemprop="datePublished">2018-05-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a>►<a class="article-category-link" href="/categories/Android/Adb/">Adb</a>►<a class="article-category-link" href="/categories/Android/Adb/Utils/">Utils</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/record/Android-ADB常用命令/">Android-ADB常用命令</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="基本指令"><a href="#基本指令" class="headerlink" title="基本指令"></a>基本指令</h2><ul>
+<li>进入指定设备 <code>adb -s serialNumber shell</code></li>
+<li>查看版本   <code>adb version</code></li>
+<li>查看日志  <code>adb logcat</code></li>
+<li>查看设备  <code>adb devices</code></li>
+<li>连接状态  <code>adb get-state</code></li>
+<li>动启ADB服务 <code>adb start-server</code></li>
+<li>停止ADB服务  <code>adb kill-server</code></li>
+<li>电脑推送到手机 <code>adb push local remote</code></li>
+<li>手机拉取到电脑 <code>adb pull remote local</code></li>
+</ul>
+<h2 id="adb-shell下的am-与-pm"><a href="#adb-shell下的am-与-pm" class="headerlink" title="adb shell下的am 与 pm"></a>adb shell下的am 与 pm</h2><blockquote>
+<p>am和pm命令必须先切换到adb shell模式下才能使用</p>
+</blockquote>
+<h3 id="am"><a href="#am" class="headerlink" title="am"></a>am</h3><p>am全称activity manager，你能使用am去模拟各种系统的行为，例如去启动一个activity，强制停止进程，发送广播进程，修改设备屏幕属性等等。当你在adb shell命令下执行am命令</p>
+<pre><code>am &lt;comman&gt;</code></pre><ul>
+<li>启动app am start -n {packageName}/.{activityName}</li>
+<li>杀app的进程 am kill <packagename></packagename></li>
+<li>强制停止一切 am force-stop <packagename></packagename></li>
+<li>启动服务am startservice</li>
+<li>停止服务 am stopservice</li>
+<li>打开简书 am start -a android.intent.action.VIEW -d <a href="http://www.jianshu.com/" target="_blank" rel="noopener">http://www.jianshu.com/</a></li>
+<li>拨打10086 am start -a android.intent.action.CALL -d tel:10086</li>
+</ul>
+<h3 id="pm"><a href="#pm" class="headerlink" title="pm"></a>pm</h3><p>pm全称package manager，你能使用pm命令去模拟Android行为或者查询设备上的应用等，当你在adb shell命令下执行pm命令</p>
+<pre><code>pm &lt;command&gt;</code></pre><ul>
+<li>列出手机所有的包名 pm list packages</li>
+<li>安装/卸载 pm install/uninstall</li>
+</ul>
+<h2 id="模拟用户事件"><a href="#模拟用户事件" class="headerlink" title="模拟用户事件"></a>模拟用户事件</h2><ul>
+<li>文本输入:<code>adb shell input text &lt;string&gt;</code><ul>
+<li>例:手机端输出demo字符串，相应指令：<code>adb shell input &quot;demo&quot;.</code></li>
+</ul>
+</li>
+<li>键盘事件：<code>input keyevent &lt;KEYCODE&gt;，其中KEYCODE见本文结尾的附表</code><ul>
+<li>例:点击返回键，相应指令： <code>input keyevent 4.</code></li>
+</ul>
+</li>
+<li>点击事件：<code>input tap &lt;x&gt; &lt;y&gt;</code><ul>
+<li>例: 点击坐标（500，500），相应指令：<code>input tap 500 500.</code></li>
+</ul>
+</li>
+<li>滑动事件：<code>input swipe &lt;x1&gt; &lt;y1&gt; &lt;x2&gt; &lt;y2&gt; &lt;time&gt;</code><ul>
+<li>例:从坐标(300，500)滑动到(100，500)，相应指令： <code>input swipe 300 500 100 500.</code></li>
+<li>例:200ms时间从坐标(300，500)滑动到(100，500)，相应指令： <code>input swipe 300 500 100 500 200.</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="循环-shell命令"><a href="#循环-shell命令" class="headerlink" title="循环 shell命令:"></a>循环 shell命令:</h3><p>连接adb后输入 adb shell input tap X坐标 Y坐标</p>
+<blockquote>
+<p>左边 adb shell input tap 279 1897<br>右边 adb shell input tap 1085 1880</p>
+</blockquote>
+<pre><code>@echo off
+set var=0
+rem ************循环开始了
+:continue
+set /a var+=1
+echo 第%var%次循环
+adb shell input tap 279 1897
+adb shell input tap 1085 1880
+if %var% lss 0 goto continue
+rem ************循环结束了
+echo 循环执行完毕
+pause</code></pre><h3 id="执行shell以后的命令"><a href="#执行shell以后的命令" class="headerlink" title="执行shell以后的命令"></a>执行shell以后的命令</h3><pre><code>adb shell &lt;123.txt</code></pre><h2 id="logcat日志"><a href="#logcat日志" class="headerlink" title="logcat日志"></a>logcat日志</h2><ul>
+<li>显示包含的<code>logcat logcat \| grep &lt;str&gt;</code></li>
+<li>显示包含，并忽略大小写的<code>logcat logcat \| grep -i &lt;str&gt;</code></li>
+<li>读完所有log后返回，而不会一直等待 <code>logcat -d</code></li>
+<li>清空log并退出 <code>logcat -c</code></li>
+<li>打印最近的<code>count logcat -t &lt;count&gt;</code></li>
+<li>格式化输出Log，其中format有如下可选值：<code>logcat -v &lt;format&gt;</code></li>
+</ul>
+<blockquote>
+<p>brief — 显示优先级/标记和原始进程的PID (默认格式)<br>process — 仅显示进程PID<br>tag — 仅显示优先级/标记<br>thread — 仅显示进程：线程和优先级/标记<br>raw — 显示原始的日志信息，没有其他的元数据字段<br>time — 显示日期，调用时间，优先级/标记，PID<br>long —显示所有的元数据字段并且用空行分隔消息内容  </p>
+</blockquote>
+<h2 id="常用节点"><a href="#常用节点" class="headerlink" title="常用节点"></a>常用节点</h2><blockquote>
+<p>查看节点值，例如：<code>cat /sys/class/leds/lcd-backlight/brightness</code><br>修改节点值，例如：<code>echo 128 &gt; sys/class/leds/lcd-backlight/brightness</code></p>
+</blockquote>
+<ul>
+<li>LPM: <code>echo N &gt; /sys/modue/lpm_levels/parameters/sleep_disabled</code></li>
+<li>亮度：<code>/sys/class/leds/lcd-backlight/brightness</code></li>
+<li>CPU: <code>/sys/devices/system/cpu/cpu0/cpufreq</code></li>
+<li>GPU: <code>/sys/class/ kgsl/kgsl-3d0/gpuclk</code></li>
+<li>限频：<code>cat /data/pmlist.config</code></li>
+<li>电流：<code>cat /sys/class/power_supply/battery/current_now</code></li>
+<li>查看Power： <code>dumpsys power</code></li>
+<li>WIFI :<code>data/misc/wifi/wpa_supplicant.conf</code></li>
+<li>持有wake_lock:<code>echo a&gt; sys/power/wake_lock</code></li>
+<li>释放wake_lock:<code>echo a&gt; sys/power/wake_unlock</code></li>
+<li>查看Wakeup_source: <code>cat sys/kernel/debug/wakeup_sources</code></li>
+<li>Display(关闭AD):<code>mv /data/misc/display/calib.cfg /data/misc/display/calib.cfg.bak 重启</code></li>
+<li>关闭cabc：<code>echo 0 &gt; /sys/device/virtual/graphics/fb0/cabc_onoff</code></li>
+<li>打开cabc：<code>echo 3 &gt; /sys/device/virtual/graphics/fb0/cabc_onoff</code></li>
+<li>systrace：<code>sdk/tools/monitor</code></li>
+<li>限频：<code>echo /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1497600</code></li>
+<li>当出现read-only 且 remount命令不管用时：<code>adb shell mount -o rw,remount /</code></li>
+<li>进入9008模式： <code>adb reboot edl</code></li>
+<li>查看高通gpio：<code>sys/class/private/tlmm</code>或者 <code>sys/private/tlmm</code></li>
+<li>查看gpio占用情况：<code>sys/kernle/debug/gpio</code></li>
+</ul>
+<h2 id="远程ADB"><a href="#远程ADB" class="headerlink" title="远程ADB"></a>远程ADB</h2><p>为避免使用数据线，可通过wifi通信，前提是手机与PC处于同一局域网</p>
+<h3 id="启动方法"><a href="#启动方法" class="headerlink" title="启动方法"></a>启动方法</h3><pre><code>adb tcpip 5555  //这一步，必须通过数据线把手机与PC连接后再执行  
+adb connect &lt;手机IP&gt;</code></pre><h3 id="停止方法"><a href="#停止方法" class="headerlink" title="停止方法"></a>停止方法</h3><pre><code>adb disconnect //断开wifi连接
+adb usb //切换到usb模式</code></pre><h2 id="常用操作示例"><a href="#常用操作示例" class="headerlink" title="常用操作示例"></a>常用操作示例</h2><ul>
+<li>查看当前 <code>ls</code></li>
+<li>打印当前路径 <code>pwd</code></li>
+<li>查看当前连接的设备 <code>adb devices</code></li>
+<li>终止adb服务进程 <code>adb kill-server</code></li>
+<li>重启adb服务进程 <code>adb start-server</code></li>
+<li>PID是:8607 查看某个进程的日志 <code>adb logcat -v process |grep 8607</code></li>
+<li>清理缓存 <code>logcat -c</code></li>
+<li>打印xys标签log <code>adb logcat -s xys</code></li>
+<li>打印192.168.56.101:5555设备里的xys标签log <code>adb -s 192.168.56.101:5555 logcat -s xys</code></li>
+<li>打印在ActivityManager标签里包含start的日志 <code>adb logcat -s ActivityManager | findstr &quot;START&quot;</code></li>
+</ul>
+<blockquote>
+<p>“-s”选项 : 设置输出日志的标签, 只显示该标签的日志;<br>“-f”选项 : 将日志输出到文件, 默认输出到标准输出流中, -f 参数执行不成功;<br>“-r”选项 : 按照每千字节输出日志, 需要 -f 参数, 不过这个命令没有执行成功;<br>“-n”选项 : 设置日志输出的最大数目, 需要 -r 参数, 这个执行 感觉 跟 adb logcat 效果一样;<br>“-v”选项 : 设置日志的输出格式, 注意只能设置一项;<br>“-c”选项 : 清空所有的日志缓存信息;<br>“-d”选项 : 将缓存的日志输出到屏幕上, 并且不会阻塞;<br>“-t”选项 : 输出最近的几行日志, 输出完退出, 不阻塞;<br>“-g”选项 : 查看日志缓冲区信息;<br>“-b”选项 : 加载一个日志缓冲区, 默认是 main, 下面详解;<br>“-B”选项 : 以二进制形式输出日志;  </p>
+</blockquote>
+<ul>
+<li>重启机器 <code>adb reboot</code></li>
+<li>获取序列号 <code>adb get-serialno</code></li>
+<li>重启到bootloader，即刷机模式 <code>adb reboot bootloader</code></li>
+<li>重启到recovery，即恢复模式 <code>adb reboot recovery</code></li>
+<li>安装APK：adb install <apkfile> //比如：<code>adb install baidu.apk</code></apkfile></li>
+<li>安装apk到sd卡： adb install -s <apkfile> // 比如：<code>adb install -s baidu.apk</code></apkfile></li>
+<li>卸载APK：adb uninstall <package> //比如：<code>adb uninstall com.baidu.search</code></package></li>
+<li>获取机器MAC地址 <code>adb shell cat /sys/class/net/wlan0/address</code></li>
+<li>启动应用：adb shell am start -n <package_name>/.<activity_class_name> <ul>
+<li>例如:<code>adb shell am start -n yf.o2o.store/yf.o2o.store.activity.LoginActivity</code></li>
+</ul>
+</activity_class_name></package_name></li>
+<li>查看占用内存排序  <code>adb shell top</code></li>
+<li>查看占用内存前6的app：<code>adb shell top -m 6</code></li>
+<li>刷新一次内存信息，然后返回：<code>adb shell top -n 1</code></li>
+<li>查询各进程内存使用情况：<code>adb shell procrank</code></li>
+<li>杀死一个进程：<code>adb shell kill [pid]</code></li>
+<li>查看进程列表：<code>adb shell ps</code></li>
+<li>查看指定进程状态：<code>adb shell ps -x [PID]</code></li>
+<li>查看后台services信息： <code>adb shell service list</code></li>
+<li>查看当前内存占用： <code>adb shell cat /proc/meminfo</code></li>
+<li>查看IO内存分区：<code>adb shell cat /proc/iomem</code></li>
+<li>将system分区重新挂载为可读写分区：<code>adb remount</code></li>
+<li>从本地复制文件到设备： <code>adb push &lt;local&gt; &lt;remote&gt;</code></li>
+<li>从设备复制文件到本地： <code>adb pull &lt;remote&gt; &lt;local&gt;</code></li>
+<li>列出目录下的文件和文件夹，等同于dos中的dir命令：<code>adb shell ls</code></li>
+<li>进入文件夹，等同于dos中的cd 命令：<code>adb shell cd &lt;folder&gt;</code></li>
+<li>重命名文件： <code>adb shell rename path/oldfilename path/newfilename</code></li>
+<li>删除system/avi.apk： <code>adb shell rm /system/avi.apk</code></li>
+<li>删除文件夹及其下面所有文件：<code>adb shell rm -r &lt;folder&gt;</code></li>
+<li>移动文件：<code>adb shell mv path/file newpath/file</code></li>
+<li>设置文件权限：<code>adb shell chmod 777 /system/fonts/DroidSansFallback.ttf</code></li>
+<li>新建文件夹：<code>adb shell mkdir path/foldelname</code></li>
+<li>查看文件内容：<code>adb shell cat &lt;file&gt;</code></li>
+<li>查看wifi密码：<code>adb shell cat /data/misc/wifi/*.conf</code></li>
+<li>清除log缓存：<code>adb logcat -c</code></li>
+<li>查看bug报告：<code>adb bugreport</code></li>
+<li>获取设备名称：<code>adb shell cat /system/build.prop</code></li>
+<li>查看ADB帮助：<code>adb help</code></li>
+<li>跑monkey：<code>adb shell monkey -v -p your.package.name 500</code> <code>adb -s 192.168.244.151:5555 shell monkey -v -p com.bolexim 500</code></li>
+</ul>
+<h2 id="附表"><a href="#附表" class="headerlink" title="附表"></a>附表</h2><p>下表中， 箭头左边为keycode值，箭头右边为keycode的含义，部分用中文标注</p>
+<pre><code>0 –&gt; “KEYCODE_UNKNOWN”
+1 –&gt; “KEYCODE_MENU”
+2 –&gt; “KEYCODE_SOFT_RIGHT”
+3 –&gt; “KEYCODE_HOME” //Home键
+4 –&gt; “KEYCODE_BACK” //返回键
+5 –&gt; “KEYCODE_CALL” 
+6 –&gt; “KEYCODE_ENDCALL” 
+7 –&gt; “KEYCODE_0” //数字键0
+8 –&gt; “KEYCODE_1” 
+9 –&gt; “KEYCODE_2” 
+10 –&gt; “KEYCODE_3”
+11 –&gt; “KEYCODE_4” 
+12 –&gt; “KEYCODE_5” 
+13 –&gt; “KEYCODE_6” 
+14 –&gt; “KEYCODE_7” 
+15 –&gt; “KEYCODE_8” 
+16 –&gt; “KEYCODE_9” 
+17 –&gt; “KEYCODE_STAR” 
+18 –&gt; “KEYCODE_POUND” 
+19 –&gt; “KEYCODE_DPAD_UP” 
+20 –&gt; “KEYCODE_DPAD_DOWN” 
+21 –&gt; “KEYCODE_DPAD_LEFT”
+22 –&gt; “KEYCODE_DPAD_RIGHT” 
+23 –&gt; “KEYCODE_DPAD_CENTER” 
+24 –&gt; “KEYCODE_VOLUME_UP” //音量键+
+25 –&gt; “KEYCODE_VOLUME_DOWN” //音量键-
+26 –&gt; “KEYCODE_POWER” //Power键
+27 –&gt; “KEYCODE_CAMERA” 
+28 –&gt; “KEYCODE_CLEAR”
+29 –&gt; “KEYCODE_A” //字母键A
+30 –&gt; “KEYCODE_B” 
+31 –&gt; “KEYCODE_C” 
+32 –&gt; “KEYCODE_D” 
+33 –&gt; “KEYCODE_E” 
+34 –&gt; “KEYCODE_F” 
+35 –&gt; “KEYCODE_G”
+36 –&gt; “KEYCODE_H”
+37 –&gt; “KEYCODE_I”
+38 –&gt; “KEYCODE_J” 
+39 –&gt; “KEYCODE_K” 
+40 –&gt; “KEYCODE_L” 
+41 –&gt; “KEYCODE_M”
+42 –&gt; “KEYCODE_N” 
+43 –&gt; “KEYCODE_O” 
+44 –&gt; “KEYCODE_P” 
+45 –&gt; “KEYCODE_Q” 
+46 –&gt; “KEYCODE_R”
+47 –&gt; “KEYCODE_S”
+48 –&gt; “KEYCODE_T” 
+49 –&gt; “KEYCODE_U” 
+50 –&gt; “KEYCODE_V” 
+51 –&gt; “KEYCODE_W” 
+52 –&gt; “KEYCODE_X”
+53 –&gt; “KEYCODE_Y” 
+54 –&gt; “KEYCODE_Z”
+55 –&gt; “KEYCODE_COMMA” 
+56 –&gt; “KEYCODE_PERIOD”
+57 –&gt; “KEYCODE_ALT_LEFT” 
+58 –&gt; “KEYCODE_ALT_RIGHT” 
+59 –&gt; “KEYCODE_SHIFT_LEFT” 
+60 –&gt; “KEYCODE_SHIFT_RIGHT”
+61 -&gt; “KEYCODE_TAB” 
+62 –&gt; “KEYCODE_SPACE” 
+63 –&gt; “KEYCODE_SYM” 
+64 –&gt; “KEYCODE_EXPLORER” 
+65 –&gt; “KEYCODE_ENVELOPE” 
+66 –&gt; “KEYCODE_ENTER” //回车键
+67 –&gt; “KEYCODE_DEL” 
+68 –&gt; “KEYCODE_GRAVE” 
+69 –&gt; “KEYCODE_MINUS” 
+70 –&gt; “KEYCODE_EQUALS” 
+71 –&gt; “KEYCODE_LEFT_BRACKET” 
+72 –&gt; “KEYCODE_RIGHT_BRACKET” 
+73 –&gt; “KEYCODE_BACKSLASH” 
+74 –&gt; “KEYCODE_SEMICOLON” 
+75 –&gt; “KEYCODE_APOSTROPHE”
+76 –&gt; “KEYCODE_SLASH” 
+77 –&gt; “KEYCODE_AT” 
+78 –&gt; “KEYCODE_NUM” 
+79 –&gt; “KEYCODE_HEADSETHOOK” 
+80 –&gt; “KEYCODE_FOCUS”
+81 –&gt; “KEYCODE_PLUS”
+82 –&gt; “KEYCODE_MENU”
+83 –&gt; “KEYCODE_NOTIFICATION”
+84 –&gt; “KEYCODE_SEARCH”</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://9aiplay.com/record/Android-ADB常用命令/" data-id="ck0m7gzne0002l0bgasco29ky" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Adb/">Adb</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Utils/">Utils</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Android-Handler的使用" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/record/Android-Handler的使用/" class="article-date">
+  <time datetime="2018-05-05T04:28:44.000Z" itemprop="datePublished">2018-05-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a>►<a class="article-category-link" href="/categories/Android/Handler/">Handler</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/record/Android-Handler的使用/">Android Handler的使用</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="Handler概述"><a href="#Handler概述" class="headerlink" title="Handler概述"></a>Handler概述</h2><p>我们都悉知在Android中，如果某项任务的执行时间太长就会导致程序ANR(Application Not Response)，所以我们都会通过将耗时操作转移到子线程执行，从而避免ANR的出现。但是Android规定UI的更新只能在主线程中进行，一旦在子线程中访问UI就会抛出异常。而Handler正是Android为了解决这一矛盾提供的解决方式。<br>首先明确几个需要着重理解的概念：</p>
+<ul>
+<li>Message：消息，携带了描述信息和数据，是Handler进行处理的对象</li>
+<li>MessageQueue：消息队列，用来存放所有通过Handler发布的消息，因为是队列，所以是先进先出的。</li>
+<li>Looper：不断循环从MessageQueue中取出Message，并交给相应的Handler进行处理。</li>
+<li>Handler：负责将Message添加到消息队列以及从Looper抽取出来的Message进行处理。</li>
+</ul>
+<h2 id="创建Handler实例"><a href="#创建Handler实例" class="headerlink" title="创建Handler实例"></a>创建Handler实例</h2><p>首先先进行Handler的实例创建</p>
+<pre><code>new Handler();
+    Log.d(&quot;main&quot;, &quot;handler1&quot;);
+
+new Thread(new Runnable() {
+    @Override
+    public void run() {
+      new Handler();
+      Log.d(&quot;thread&quot;, &quot;handler2&quot;);
+    }
+}).start();</code></pre><p>我们可以发现，当执行到新线程中创建Handler时会抛出异常：</p>
+<pre><code>java.lang.RuntimeException: Can&apos;t create handler inside thread that has not called Looper.prepare()</code></pre><p>而如果我们在代码中把<code>Looper.prepare()</code>加上，就可以正常运行：</p>
+<pre><code>new Thread(new Runnable() {
+@Override
+public void run() {
+  Looper.prepare();
+  new Handler();
+  Log.d(&quot;thread&quot;, &quot;handler2&quot;);
+}
+}).start();</code></pre><p>我们回过头来看看Handler实例的时候都做了些什么：</p>
+<pre><code>public Handler() {
+    if (FIND_POTENTIAL_LEAKS) {
+        final Class&lt;? extends Handler&gt; klass = getClass();
+        if ((klass.isAnonymousClass() || klass.isMemberClass() || klass.isLocalClass()) &amp;&amp;
+                (klass.getModifiers() &amp; Modifier.STATIC) == 0) {
+            Log.w(TAG, &quot;The following Handler class should be static or leaks might occur: &quot; +
+                klass.getCanonicalName());
+        }
+    }
+
+    mLooper = Looper.myLooper();
+    if (mLooper == null) {
+        throw new RuntimeException(
+            &quot;Can&apos;t create handler inside thread that has not called Looper.prepare()&quot;);
+    }
+    mQueue = mLooper.mQueue;
+    mCallback = callback;
+}</code></pre><p>可以看到，当<code>mLooper == null</code>时就会抛出刚所说的异常。那么Looper对象何时为空呢？</p>
+<pre><code>public static final Looper myLooper() {  
+    return (Looper)sThreadLocal.get();  
+}</code></pre><p>可以看到Looper对象是从sThreadLocal中取出。而通过Looper.prepare()就可以设置这个对象：</p>
+<pre><code>private static void prepare(boolean quitAllowed) {
+    if (sThreadLocal.get() != null) {
+        throw new RuntimeException(&quot;Only one Looper may be created per thread&quot;);
+    }
+    sThreadLocal.set(new Looper(quitAllowed));
+}</code></pre><p>那么为什么在主线程中创建Handler的时候没有报错呢？答案就在ActivityThread中的main()方法</p>
+<pre><code>public static void main(String[] args) {
+    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, &quot;ActivityThreadMain&quot;);
+    SamplingProfilerIntegration.start();
+
+    // CloseGuard defaults to true and can be quite spammy.  We
+    // disable it here, but selectively enable it later (via
+    // StrictMode) on debug builds, but using DropBox, not logs.
+    CloseGuard.setEnabled(false);
+
+    Environment.initForCurrentUser();
+
+    // Set the reporter for event logging in libcore
+    EventLogger.setReporter(new EventLoggingReporter());
+
+    // Make sure TrustedCertificateStore looks in the right place for CA certificates
+    final File configDir = Environment.getUserConfigDirectory(UserHandle.myUserId());
+    TrustedCertificateStore.setDefaultUserDirectory(configDir);
+
+    Process.setArgV0(&quot;&lt;pre-initialized&gt;&quot;);
+
+    //关键点
+    Looper.prepareMainLooper();
+
+    ActivityThread thread = new ActivityThread();
+    thread.attach(false);
+
+    if (sMainThreadHandler == null) {
+        sMainThreadHandler = thread.getHandler();
+    }
+
+    if (false) {
+        Looper.myLooper().setMessageLogging(new
+                LogPrinter(Log.DEBUG, &quot;ActivityThread&quot;));
+    }
+
+    // End of event ActivityThreadMain.
+    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+    Looper.loop();
+
+    throw new RuntimeException(&quot;Main thread loop unexpectedly exited&quot;);
+}
+
+public static void prepareMainLooper() {
+    prepare(false);
+    synchronized (Looper.class) {
+        if (sMainLooper != null) {
+            throw new IllegalStateException(&quot;The main Looper has already been prepared.&quot;);
+        }
+        sMainLooper = myLooper();
+    }
+}</code></pre><p>可以看到在Activity生命周期开始的后就通过调用Looper.prepareMainLooper()创建了一个主线程的Looper。</p>
+<p>所以主线程可以直接创建Handler对象，而子线程则需要先调用Looper.prepare()</p>
+<h2 id="Handler消息发送"><a href="#Handler消息发送" class="headerlink" title="Handler消息发送"></a>Handler消息发送</h2><p>先写一个简单的消息发送示例：</p>
+<pre><code>Handler handler = new Handler();
+Message msg = new Message();
+msg.arg1 = 1;
+Bundle bundle = new Bundle();
+bundle.putString(&quot;data&quot;, &quot;test&quot;);
+msg.setData(bundle);
+handler.sendMessage(msg);</code></pre><p>Handler提供了几个发送的方法，其中经过辗转后面都会调用该方法<code>sendMessageAtTime(Message msg, long uptimeMillis)：</code></p>
+<pre><code>public boolean sendMessageAtTime(Message msg, long uptimeMillis) {
+    MessageQueue queue = mQueue;
+    if (queue == null) {
+        RuntimeException e = new RuntimeException(
+                this + &quot; sendMessageAtTime() called with no mQueue&quot;);
+        Log.w(&quot;Looper&quot;, e.getMessage(), e);
+        return false;
+    }
+    return enqueueMessage(queue, msg, uptimeMillis);
+}</code></pre><p>通过enqueueMessage()方法进行消息入队。</p>
+<pre><code>MessageQueue.enqueueMessage(Message msg, long when)：
+
+
+boolean enqueueMessage(Message msg, long when) {
+    if (msg.target == null) {
+        throw new IllegalArgumentException(&quot;Message must have a target.&quot;);
+    }
+    if (msg.isInUse()) {
+        throw new IllegalStateException(msg + &quot; This message is already in use.&quot;);
+    }
+
+    synchronized (this) {
+        if (mQuitting) {
+            IllegalStateException e = new IllegalStateException(
+                    msg.target + &quot; sending message to a Handler on a dead thread&quot;);
+            Log.w(TAG, e.getMessage(), e);
+            msg.recycle();
+            return false;
+        }
+
+        msg.markInUse();
+        msg.when = when;
+        Message p = mMessages;
+        boolean needWake;
+        if (p == null || when == 0 || when &lt; p.when) {
+            // New head, wake up the event queue if blocked.
+            msg.next = p;
+            mMessages = msg;
+            needWake = mBlocked;
+        } else {
+            // Inserted within the middle of the queue.  Usually we don&apos;t have to wake
+            // up the event queue unless there is a barrier at the head of the queue
+            // and the message is the earliest asynchronous message in the queue.
+            needWake = mBlocked &amp;&amp; p.target == null &amp;&amp; msg.isAsynchronous();
+            Message prev;
+            for (;;) {
+                prev = p;
+                p = p.next;
+                if (p == null || when &lt; p.when) {
+                    break;
+                }
+                if (needWake &amp;&amp; p.isAsynchronous()) {
+                    needWake = false;
+                }
+            }
+            msg.next = p; // invariant: p == prev.next
+            prev.next = msg;
+        }
+
+        // We can assume mPtr != 0 because mQuitting is false.
+        if (needWake) {
+            nativeWake(mPtr);
+        }
+    }
+    return true;
+}</code></pre><p>因为存在多线程插入消息，所以需要加上同步；参数<code>when=SystemClock.uptimeMillis()+delayMillis</code>，如果调用的是post方法则delayMillis为0；mMessages代表的是消息队列的头部，当它为空的时候表示队列没有消息，并且根据当前的Loop线程的状态来判断是否需要唤醒队列；否则插入消息并且根据when来对msg进行队列的排序；最后判断是否需要唤醒Looper线程，至此完成了消息的加入。</p>
+<h2 id="Handler消息处理"><a href="#Handler消息处理" class="headerlink" title="Handler消息处理"></a>Handler消息处理</h2><p>在上面提到的ActivityThread.main()方法中，不仅调用了Looper.prepareMainLooper,而且也调用了Looper.loop方法</p>
+<p>public static void loop() {<br>        final Looper me = myLooper();<br>        if (me == null) {<br>            throw new RuntimeException(“No Looper; Looper.prepare() wasn’t called on this thread.”);<br>        }<br>        final MessageQueue queue = me.mQueue;</p>
+<pre><code>    // Make sure the identity of this thread is that of the local process,
+    // and keep track of what that identity token actually is.
+    Binder.clearCallingIdentity();
+    final long ident = Binder.clearCallingIdentity();
+
+    for (;;) {
+        Message msg = queue.next(); // might block
+        if (msg == null) {
+            // No message indicates that the message queue is quitting.
+            return;
+        }
+
+        // This must be in a local variable, in case a UI event sets the logger
+        final Printer logging = me.mLogging;
+        if (logging != null) {
+            logging.println(&quot;&gt;&gt;&gt;&gt;&gt; Dispatching to &quot; + msg.target + &quot; &quot; +
+                    msg.callback + &quot;: &quot; + msg.what);
+        }
+
+        final long slowDispatchThresholdMs = me.mSlowDispatchThresholdMs;
+
+        final long traceTag = me.mTraceTag;
+        if (traceTag != 0 &amp;&amp; Trace.isTagEnabled(traceTag)) {
+            Trace.traceBegin(traceTag, msg.target.getTraceName(msg));
+        }
+        final long start = (slowDispatchThresholdMs == 0) ? 0 : SystemClock.uptimeMillis();
+        final long end;
+        try {
+            msg.target.dispatchMessage(msg);
+            end = (slowDispatchThresholdMs == 0) ? 0 : SystemClock.uptimeMillis();
+        } finally {
+            if (traceTag != 0) {
+                Trace.traceEnd(traceTag);
+            }
+        }
+        if (slowDispatchThresholdMs &gt; 0) {
+            final long time = end - start;
+            if (time &gt; slowDispatchThresholdMs) {
+                Slog.w(TAG, &quot;Dispatch took &quot; + time + &quot;ms on &quot;
+                        + Thread.currentThread().getName() + &quot;, h=&quot; +
+                        msg.target + &quot; cb=&quot; + msg.callback + &quot; msg=&quot; + msg.what);
+            }
+        }
+
+        if (logging != null) {
+            logging.println(&quot;&lt;&lt;&lt;&lt;&lt; Finished to &quot; + msg.target + &quot; &quot; + msg.callback);
+        }
+
+        // Make sure that during the course of dispatching the
+        // identity of the thread wasn&apos;t corrupted.
+        final long newIdent = Binder.clearCallingIdentity();
+        if (ident != newIdent) {
+            Log.wtf(TAG, &quot;Thread identity changed from 0x&quot;
+                    + Long.toHexString(ident) + &quot; to 0x&quot;
+                    + Long.toHexString(newIdent) + &quot; while dispatching to &quot;
+                    + msg.target.getClass().getName() + &quot; &quot;
+                    + msg.callback + &quot; what=&quot; + msg.what);
+        }
+
+        msg.recycleUnchecked();
+    }
+}</code></pre><p>首先获取到当前Looper和MessageQueue实例，然后通过一个死循环经queue.next()方法获取下一个Message，当MessageQueue为空，则阻塞队列。而每当有一个消息出队的时候，都会经过msg.target.dispatchMessage(msg)，通过上面我们知道msg.target其实就是Handler。<br>那么我们就来到Handler.dispatchMessage()：</p>
+<pre><code>public void dispatchMessage(Message msg) {
+    if (msg.callback != null) {
+        handleCallback(msg);
+    } else {
+        if (mCallback != null) {
+            if (mCallback.handleMessage(msg)) {
+                return;
+            }
+        }
+        handleMessage(msg);
+    }
+}</code></pre><p>如果mCallback不为空，则执行mCallback.handleMessage(msg)；否则走Handler.handleCallback(msg)方法。所以我们可以通过handleMessage()方法获取到之前发送的消息！</p>
+<h2 id="Handler注意事项"><a href="#Handler注意事项" class="headerlink" title="Handler注意事项"></a>Handler注意事项</h2><pre><code>Handler mHandler = new Handler(){
+    @Override
+    public void handleMessage(Message msg) {
+      super.handleMessage(msg);
+    }
+  };</code></pre><p>由于java中非静态内部类和匿名内部类都会隐式持有当前类的外部引用，而上图所示的使用方式正是因为Handler是非静态内部类所以其持有当前Activity的隐式引用，如果Handler没有被释放，其所持有的外部引用也就是Activity也无法被释放，本该被回收的对象不能被回收而停留在堆内存中，这就产生了内存泄漏。</p>
+<p>而面对这种情况，我们通常的解决方式就是使用静态内部类并继承Handler（或者也可以单独存放成一个类文件）。因为静态的内部类不会持有外部类的引用，所以不会导致外部类实例的内存泄露。当你需要在静态内部类中调用外部的Activity时，我们可以使用弱引用来处理。如下所示：</p>
+<pre><code>private static class MyHandler extends Handler {
+
+    //持有弱引用HandlerActivity,GC回收时会被回收掉.  
+    private final WeakReference&lt;MainActivity&gt; mActivty;
+
+    public MyHandler(MainActivity activity) {
+      mActivty = new WeakReference&lt;&gt;(activity);
+    }
+
+    @Override
+    public void handleMessage(Message msg) {
+      MainActivity activity = mActivty.get();
+      super.handleMessage(msg);
+      if (activity != null) {
+        //执行业务逻辑  
+      }
+        }
+}</code></pre><p>至此完成对Handler分析。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://9aiplay.com/record/Android-Handler的使用/" data-id="ck0m7gzo2000fl0bgrk7hf2no" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Handler/">Handler</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-application-restart" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/record/application-restart/" class="article-date">
+  <time datetime="2018-05-02T09:55:34.000Z" itemprop="datePublished">2018-05-02</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a>►<a class="article-category-link" href="/categories/Android/重启app/">重启app</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/record/application-restart/">Android重启app功能</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="使用-FLAG-ACTIVITY-CLEAR-TOP"><a href="#使用-FLAG-ACTIVITY-CLEAR-TOP" class="headerlink" title="使用 FLAG_ACTIVITY_CLEAR_TOP"></a>使用 FLAG_ACTIVITY_CLEAR_TOP</h2><p>特点：不杀进程,不清除缓存,启动快</p>
+<pre><code>Intent intent = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
+intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+startActivity(intent);</code></pre><h2 id="使用-AlarmManager"><a href="#使用-AlarmManager" class="headerlink" title="使用 AlarmManager"></a>使用 AlarmManager</h2><p>特点：杀进程,短暂黑屏,启动慢</p>
+<pre><code>Intent intent = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
+PendingIntent restartIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
+AlarmManager mgr = (AlarmManager)getSystemService(Context.ALARM_SERVICE);       
+mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 10, restartIntent); 
+android.os.Process.killProcess(android.os.Process.myPid());</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://9aiplay.com/record/application-restart/" data-id="ck0m7gzoc000pl0bghkb2q0d0" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/重启app/">重启app</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Adb/">Adb</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Adb/Utils/">Utils</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/AsyncTask/">AsyncTask</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/AutoSearchBug/">AutoSearchBug</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Fragment/">Fragment</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Fragment/Activity/">Activity</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Handler/">Handler</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Java/">Java</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Java/线程/">线程</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Java/线程/join/">join</a></li></ul></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Ui库/">Ui库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/View/">View</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/性能优化/">性能优化</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/重启app/">重启app</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/面试题/">面试题</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo/">Hexo</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/Git/">Git</a></li></ul></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Activity/">Activity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Adb/">Adb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AsyncTask/">AsyncTask</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AutoSearchBug/">AutoSearchBug</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Fragment/">Fragment</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Handler/">Handler</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Logcat/">Logcat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ui库/">Ui库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Utils/">Utils</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/View/">View</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/join/">join</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/性能优化/">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/线程/">线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/转载/">转载</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/重启app/">重启app</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试题/">面试题</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Activity/" style="font-size: 10px;">Activity</a> <a href="/tags/Adb/" style="font-size: 10px;">Adb</a> <a href="/tags/Android/" style="font-size: 20px;">Android</a> <a href="/tags/AsyncTask/" style="font-size: 10px;">AsyncTask</a> <a href="/tags/AutoSearchBug/" style="font-size: 10px;">AutoSearchBug</a> <a href="/tags/Fragment/" style="font-size: 10px;">Fragment</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/Handler/" style="font-size: 15px;">Handler</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Logcat/" style="font-size: 10px;">Logcat</a> <a href="/tags/Ui库/" style="font-size: 10px;">Ui库</a> <a href="/tags/Utils/" style="font-size: 10px;">Utils</a> <a href="/tags/View/" style="font-size: 10px;">View</a> <a href="/tags/join/" style="font-size: 10px;">join</a> <a href="/tags/性能优化/" style="font-size: 10px;">性能优化</a> <a href="/tags/线程/" style="font-size: 10px;">线程</a> <a href="/tags/转载/" style="font-size: 15px;">转载</a> <a href="/tags/重启app/" style="font-size: 10px;">重启app</a> <a href="/tags/面试题/" style="font-size: 10px;">面试题</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/record/GIT常用操作/">GIT常用操作</a>
+          </li>
+        
+          <li>
+            <a href="/record/Handler都没搞定，拿什么去跳槽！/">Handler都没搞定，拿什么去跳槽！</a>
+          </li>
+        
+          <li>
+            <a href="/record/Android大厂面试题锦集/">Android大厂面试题锦集</a>
+          </li>
+        
+          <li>
+            <a href="/record/hexo常用命令/">hexo常用命令</a>
+          </li>
+        
+          <li>
+            <a href="/record/Android获取Imageview上的图片/">Android获取Imageview上的图片</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 zhangyong<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

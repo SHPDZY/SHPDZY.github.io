@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>AsyncTask源码分析 | 张永的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="说到Android中的异步执行AsyncTask一定不陌生，今天就让我们来到它的内部一探究竟。 定义一个异步任务首先简单写一个使用例子： private class MyAsyncTask extends AsyncTask&amp;lt;String, Integer, String&amp;gt; {      @Override     protected void onPreExecute() {">
+<meta name="keywords" content="Android,AsyncTask">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AsyncTask源码分析">
+<meta property="og:url" content="http://9aiplay.com/record/AsyncTask源码分析/index.html">
+<meta property="og:site_name" content="张永的个人博客">
+<meta property="og:description" content="说到Android中的异步执行AsyncTask一定不陌生，今天就让我们来到它的内部一探究竟。 定义一个异步任务首先简单写一个使用例子： private class MyAsyncTask extends AsyncTask&amp;lt;String, Integer, String&amp;gt; {      @Override     protected void onPreExecute() {">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-07-03T02:12:53.676Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AsyncTask源码分析">
+<meta name="twitter:description" content="说到Android中的异步执行AsyncTask一定不陌生，今天就让我们来到它的内部一探究竟。 定义一个异步任务首先简单写一个使用例子： private class MyAsyncTask extends AsyncTask&amp;lt;String, Integer, String&amp;gt; {      @Override     protected void onPreExecute() {">
+  
+    <link rel="alternate" href="/atom.xml" title="张永的个人博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">张永的个人博客</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://9aiplay.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-AsyncTask源码分析" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/record/AsyncTask源码分析/" class="article-date">
+  <time datetime="2018-05-16T03:59:21.000Z" itemprop="datePublished">2018-05-16</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a>►<a class="article-category-link" href="/categories/Android/AsyncTask/">AsyncTask</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      AsyncTask源码分析
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>说到Android中的异步执行AsyncTask一定不陌生，今天就让我们来到它的内部一探究竟。</p>
+<h2 id="定义一个异步任务"><a href="#定义一个异步任务" class="headerlink" title="定义一个异步任务"></a>定义一个异步任务</h2><p>首先简单写一个使用例子：</p>
+<pre><code>private class MyAsyncTask extends AsyncTask&lt;String, Integer, String&gt; {
+
+    @Override
+    protected void onPreExecute() {
+      super.onPreExecute();
+    }
+
+    @Override
+    protected String doInBackground(String... strings) {
+      return null;
+    }
+
+    @Override
+    protected void onPostExecute(String s) {
+      super.onPostExecute(s);
+    }
+
+  }</code></pre><h2 id="执行该任务"><a href="#执行该任务" class="headerlink" title="执行该任务"></a>执行该任务</h2><pre><code>new MyAsyncTask().execute(&quot;&quot;);</code></pre><p>我们从任务的起点execute()看起：</p>
+<pre><code>@MainThread
+public final AsyncTask&lt;Params, Progress, Result&gt; execute(Params... params) {
+    return executeOnExecutor(sDefaultExecutor, params);
+}
+
+@MainThread
+public final AsyncTask&lt;Params, Progress, Result&gt; executeOnExecutor(Executor exec,
+        Params... params) {
+    if (mStatus != Status.PENDING) {
+        switch (mStatus) {
+            case RUNNING:
+                throw new IllegalStateException(&quot;Cannot execute task:&quot;
+                        + &quot; the task is already running.&quot;);
+            case FINISHED:
+                throw new IllegalStateException(&quot;Cannot execute task:&quot;
+                        + &quot; the task has already been executed &quot;
+                        + &quot;(a task can be executed only once)&quot;);
+        }
+    }
+
+    mStatus = Status.RUNNING;
+
+    onPreExecute();
+
+    mWorker.mParams = params;
+    exec.execute(mFuture);
+
+    return this;
+}</code></pre><p>可以看到这个方法必须在主线程中调用，方法中对状态过了一个过滤和变更，回调onPreExecute方法让我们在任务执行前进行一些操作。里面涉及到了2个关键变量mWorker和mFuture。<br>它们都是在构造函数那进行初始化：</p>
+<pre><code>public AsyncTask(@Nullable Looper callbackLooper) {
+    mHandler = callbackLooper == null || callbackLooper == Looper.getMainLooper()
+        ? getMainHandler()
+        : new Handler(callbackLooper);
+
+    mWorker = new WorkerRunnable&lt;Params, Result&gt;() {
+        public Result call() throws Exception {
+            mTaskInvoked.set(true);
+            Result result = null;
+            try {
+                Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+                //noinspection unchecked
+                result = doInBackground(mParams);
+                Binder.flushPendingCommands();
+            } catch (Throwable tr) {
+                mCancelled.set(true);
+                throw tr;
+            } finally {
+                postResult(result);
+            }
+            return result;
+        }
+    };
+
+    mFuture = new FutureTask&lt;Result&gt;(mWorker) {
+        @Override
+        protected void done() {
+            try {
+                postResultIfNotInvoked(get());
+            } catch (InterruptedException e) {
+                android.util.Log.w(LOG_TAG, e);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(&quot;An error occurred while executing doInBackground()&quot;,
+                        e.getCause());
+            } catch (CancellationException e) {
+                postResultIfNotInvoked(null);
+            }
+        }
+    };
+}</code></pre><p>可以看到mWorker是WorkerRunnable的实例，而它实现了Callable<result>接口，并在call()方法中调用了doInBackground来处理任务并获取结果，最终通过postResult方法将结果送出：</result></p>
+<pre><code>   private Result postResult(Result result) {
+    Message message = getHandler().obtainMessage(MESSAGE_POST_RESULT,
+            new AsyncTaskResult&lt;Result&gt;(this, result));
+    message.sendToTarget();
+    return result;
+}</code></pre><p>还是那个熟悉的套路，通过Handler进行消息的发送，那么必须会有一个地方来进行消息的处理：</p>
+<pre><code>   private static class InternalHandler extends Handler {
+    public InternalHandler(Looper looper) {
+        super(looper);
+    }
+
+    @Override
+    public void handleMessage(Message msg) {
+        AsyncTaskResult&lt;?&gt; result = (AsyncTaskResult&lt;?&gt;) msg.obj;
+        switch (msg.what) {
+            case MESSAGE_POST_RESULT:
+                // There is only one result
+                result.mTask.finish(result.mData[0]);
+                break;
+            case MESSAGE_POST_PROGRESS:
+                result.mTask.onProgressUpdate(result.mData);
+                break;
+        }
+    }
+}
+
+   private void finish(Result result) {
+    if (isCancelled()) {
+        onCancelled(result);
+    } else {
+        onPostExecute(result);
+    }
+    mStatus = Status.FINISHED;
+}</code></pre><p>收到消息并在处理完毕后变更任务状态，将任务的处理结果回调出去。<br>而变量mFuture，它是FutureTask的实例，FutureTask是一个可取消的异步任务，它实现了Runnable和Future接口，并且可以包装Callable和Runnable对象然后交由Executor执行。这里WorkerRunnable作为参数被包装进了FutureTask。</p>
+<p>那么我们回过头来看看<code>exec.execute(mFuture)</code>方法：</p>
+<pre><code>private static volatile Executor sDefaultExecutor = SERIAL_EXECUTOR;
+
+public static final Executor SERIAL_EXECUTOR = new SerialExecutor();
+
+private static class SerialExecutor implements Executor {
+    final ArrayDeque&lt;Runnable&gt; mTasks = new ArrayDeque&lt;Runnable&gt;();
+    Runnable mActive;
+
+    public synchronized void execute(final Runnable r) {
+        mTasks.offer(new Runnable() {
+            public void run() {
+                try {
+                    r.run();
+                } finally {
+                    scheduleNext();
+                }
+            }
+        });
+        if (mActive == null) {
+            scheduleNext();
+        }
+    }
+
+    protected synchronized void scheduleNext() {
+        if ((mActive = mTasks.poll()) != null) {
+            THREAD_POOL_EXECUTOR.execute(mActive);
+        }
+    }
+}</code></pre><p>这里exec其实就是sDefaultExecutor，它是一个串行的线程池。当我们调用execute方法时，就会将上面提到了FutureTask加入到mTasks中。当任务执行完或者没有任务的时候就会执行scheduleNext方法，从mTasks中取出任务并交由THREAD_POOL_EXECUTOR进行处理。</p>
+<h2 id="关于THREAD-POOL-EXECUTOR："><a href="#关于THREAD-POOL-EXECUTOR：" class="headerlink" title="关于THREAD_POOL_EXECUTOR："></a>关于THREAD_POOL_EXECUTOR：</h2><pre><code>//CPU核数
+private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
+   //线程池核心线程数
+private static final int CORE_POOL_SIZE = Math.max(2, Math.min(CPU_COUNT - 1, 4));
+//线程池最大线程数
+private static final int MAXIMUM_POOL_SIZE = CPU_COUNT * 2 + 1;
+private static final int KEEP_ALIVE_SECONDS = 30;
+
+private static final ThreadFactory sThreadFactory = new ThreadFactory() {
+    private final AtomicInteger mCount = new AtomicInteger(1);
+
+    public Thread newThread(Runnable r) {
+        return new Thread(r, &quot;AsyncTask #&quot; + mCount.getAndIncrement());
+    }
+};
+
+private static final BlockingQueue&lt;Runnable&gt; sPoolWorkQueue = new LinkedBlockingQueue&lt;Runnable&gt;(128);
+
+public static final Executor THREAD_POOL_EXECUTOR;
+
+static {
+    ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
+            CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_SECONDS, TimeUnit.SECONDS,
+            sPoolWorkQueue, sThreadFactory);
+    threadPoolExecutor.allowCoreThreadTimeOut(true);
+    THREAD_POOL_EXECUTOR = threadPoolExecutor;
+}</code></pre><p>可以看到THREAD_POOL_EXECUTOR是一个线程池，也是AsyncTask真正的执行者。<br>如果想要实现并行效果，我们可以通过调用  </p>
+<pre><code>public final AsyncTask&lt;Params, Progress, Result&gt; executeOnExecutor(Executor exec, Params... params)， </code></pre><p>定义一个并行执行的Executor即可。<br>至此便是AsyncTask所有的执行流程。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://9aiplay.com/record/AsyncTask源码分析/" data-id="ck0m7gzom0012l0bgdb28dl5k" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/AsyncTask/">AsyncTask</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/record/fragment和activity的区别/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          fragment和activity的区别
+        
+      </div>
+    </a>
+  
+  
+    <a href="/record/Android-性能优化/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">转载:Android 性能优化</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Adb/">Adb</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Adb/Utils/">Utils</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/AsyncTask/">AsyncTask</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/AutoSearchBug/">AutoSearchBug</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Fragment/">Fragment</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Fragment/Activity/">Activity</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Handler/">Handler</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Java/">Java</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Java/线程/">线程</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Java/线程/join/">join</a></li></ul></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Ui库/">Ui库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/View/">View</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/性能优化/">性能优化</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/重启app/">重启app</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/面试题/">面试题</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo/">Hexo</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/Git/">Git</a></li></ul></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Activity/">Activity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Adb/">Adb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AsyncTask/">AsyncTask</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AutoSearchBug/">AutoSearchBug</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Fragment/">Fragment</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Handler/">Handler</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Logcat/">Logcat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ui库/">Ui库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Utils/">Utils</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/View/">View</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/join/">join</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/性能优化/">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/线程/">线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/转载/">转载</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/重启app/">重启app</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试题/">面试题</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Activity/" style="font-size: 10px;">Activity</a> <a href="/tags/Adb/" style="font-size: 10px;">Adb</a> <a href="/tags/Android/" style="font-size: 20px;">Android</a> <a href="/tags/AsyncTask/" style="font-size: 10px;">AsyncTask</a> <a href="/tags/AutoSearchBug/" style="font-size: 10px;">AutoSearchBug</a> <a href="/tags/Fragment/" style="font-size: 10px;">Fragment</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/Handler/" style="font-size: 15px;">Handler</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Logcat/" style="font-size: 10px;">Logcat</a> <a href="/tags/Ui库/" style="font-size: 10px;">Ui库</a> <a href="/tags/Utils/" style="font-size: 10px;">Utils</a> <a href="/tags/View/" style="font-size: 10px;">View</a> <a href="/tags/join/" style="font-size: 10px;">join</a> <a href="/tags/性能优化/" style="font-size: 10px;">性能优化</a> <a href="/tags/线程/" style="font-size: 10px;">线程</a> <a href="/tags/转载/" style="font-size: 15px;">转载</a> <a href="/tags/重启app/" style="font-size: 10px;">重启app</a> <a href="/tags/面试题/" style="font-size: 10px;">面试题</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/record/GIT常用操作/">GIT常用操作</a>
+          </li>
+        
+          <li>
+            <a href="/record/Handler都没搞定，拿什么去跳槽！/">Handler都没搞定，拿什么去跳槽！</a>
+          </li>
+        
+          <li>
+            <a href="/record/Android大厂面试题锦集/">Android大厂面试题锦集</a>
+          </li>
+        
+          <li>
+            <a href="/record/hexo常用命令/">hexo常用命令</a>
+          </li>
+        
+          <li>
+            <a href="/record/Android获取Imageview上的图片/">Android获取Imageview上的图片</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 zhangyong<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

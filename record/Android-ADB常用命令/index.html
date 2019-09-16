@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>Android-ADB常用命令 | 张永的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="基本指令 进入指定设备 adb -s serialNumber shell 查看版本   adb version 查看日志  adb logcat 查看设备  adb devices 连接状态  adb get-state 动启ADB服务 adb start-server 停止ADB服务  adb kill-server 电脑推送到手机 adb push local remote 手机拉取到电脑">
+<meta name="keywords" content="Android,Adb,Utils">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android-ADB常用命令">
+<meta property="og:url" content="http://9aiplay.com/record/Android-ADB常用命令/index.html">
+<meta property="og:site_name" content="张永的个人博客">
+<meta property="og:description" content="基本指令 进入指定设备 adb -s serialNumber shell 查看版本   adb version 查看日志  adb logcat 查看设备  adb devices 连接状态  adb get-state 动启ADB服务 adb start-server 停止ADB服务  adb kill-server 电脑推送到手机 adb push local remote 手机拉取到电脑">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-07-03T02:12:53.671Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android-ADB常用命令">
+<meta name="twitter:description" content="基本指令 进入指定设备 adb -s serialNumber shell 查看版本   adb version 查看日志  adb logcat 查看设备  adb devices 连接状态  adb get-state 动启ADB服务 adb start-server 停止ADB服务  adb kill-server 电脑推送到手机 adb push local remote 手机拉取到电脑">
+  
+    <link rel="alternate" href="/atom.xml" title="张永的个人博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">张永的个人博客</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://9aiplay.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Android-ADB常用命令" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/record/Android-ADB常用命令/" class="article-date">
+  <time datetime="2018-05-08T06:30:05.000Z" itemprop="datePublished">2018-05-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a>►<a class="article-category-link" href="/categories/Android/Adb/">Adb</a>►<a class="article-category-link" href="/categories/Android/Adb/Utils/">Utils</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android-ADB常用命令
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="基本指令"><a href="#基本指令" class="headerlink" title="基本指令"></a>基本指令</h2><ul>
+<li>进入指定设备 <code>adb -s serialNumber shell</code></li>
+<li>查看版本   <code>adb version</code></li>
+<li>查看日志  <code>adb logcat</code></li>
+<li>查看设备  <code>adb devices</code></li>
+<li>连接状态  <code>adb get-state</code></li>
+<li>动启ADB服务 <code>adb start-server</code></li>
+<li>停止ADB服务  <code>adb kill-server</code></li>
+<li>电脑推送到手机 <code>adb push local remote</code></li>
+<li>手机拉取到电脑 <code>adb pull remote local</code></li>
+</ul>
+<h2 id="adb-shell下的am-与-pm"><a href="#adb-shell下的am-与-pm" class="headerlink" title="adb shell下的am 与 pm"></a>adb shell下的am 与 pm</h2><blockquote>
+<p>am和pm命令必须先切换到adb shell模式下才能使用</p>
+</blockquote>
+<h3 id="am"><a href="#am" class="headerlink" title="am"></a>am</h3><p>am全称activity manager，你能使用am去模拟各种系统的行为，例如去启动一个activity，强制停止进程，发送广播进程，修改设备屏幕属性等等。当你在adb shell命令下执行am命令</p>
+<pre><code>am &lt;comman&gt;</code></pre><ul>
+<li>启动app am start -n {packageName}/.{activityName}</li>
+<li>杀app的进程 am kill <packagename></packagename></li>
+<li>强制停止一切 am force-stop <packagename></packagename></li>
+<li>启动服务am startservice</li>
+<li>停止服务 am stopservice</li>
+<li>打开简书 am start -a android.intent.action.VIEW -d <a href="http://www.jianshu.com/" target="_blank" rel="noopener">http://www.jianshu.com/</a></li>
+<li>拨打10086 am start -a android.intent.action.CALL -d tel:10086</li>
+</ul>
+<h3 id="pm"><a href="#pm" class="headerlink" title="pm"></a>pm</h3><p>pm全称package manager，你能使用pm命令去模拟Android行为或者查询设备上的应用等，当你在adb shell命令下执行pm命令</p>
+<pre><code>pm &lt;command&gt;</code></pre><ul>
+<li>列出手机所有的包名 pm list packages</li>
+<li>安装/卸载 pm install/uninstall</li>
+</ul>
+<h2 id="模拟用户事件"><a href="#模拟用户事件" class="headerlink" title="模拟用户事件"></a>模拟用户事件</h2><ul>
+<li>文本输入:<code>adb shell input text &lt;string&gt;</code><ul>
+<li>例:手机端输出demo字符串，相应指令：<code>adb shell input &quot;demo&quot;.</code></li>
+</ul>
+</li>
+<li>键盘事件：<code>input keyevent &lt;KEYCODE&gt;，其中KEYCODE见本文结尾的附表</code><ul>
+<li>例:点击返回键，相应指令： <code>input keyevent 4.</code></li>
+</ul>
+</li>
+<li>点击事件：<code>input tap &lt;x&gt; &lt;y&gt;</code><ul>
+<li>例: 点击坐标（500，500），相应指令：<code>input tap 500 500.</code></li>
+</ul>
+</li>
+<li>滑动事件：<code>input swipe &lt;x1&gt; &lt;y1&gt; &lt;x2&gt; &lt;y2&gt; &lt;time&gt;</code><ul>
+<li>例:从坐标(300，500)滑动到(100，500)，相应指令： <code>input swipe 300 500 100 500.</code></li>
+<li>例:200ms时间从坐标(300，500)滑动到(100，500)，相应指令： <code>input swipe 300 500 100 500 200.</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="循环-shell命令"><a href="#循环-shell命令" class="headerlink" title="循环 shell命令:"></a>循环 shell命令:</h3><p>连接adb后输入 adb shell input tap X坐标 Y坐标</p>
+<blockquote>
+<p>左边 adb shell input tap 279 1897<br>右边 adb shell input tap 1085 1880</p>
+</blockquote>
+<pre><code>@echo off
+set var=0
+rem ************循环开始了
+:continue
+set /a var+=1
+echo 第%var%次循环
+adb shell input tap 279 1897
+adb shell input tap 1085 1880
+if %var% lss 0 goto continue
+rem ************循环结束了
+echo 循环执行完毕
+pause</code></pre><h3 id="执行shell以后的命令"><a href="#执行shell以后的命令" class="headerlink" title="执行shell以后的命令"></a>执行shell以后的命令</h3><pre><code>adb shell &lt;123.txt</code></pre><h2 id="logcat日志"><a href="#logcat日志" class="headerlink" title="logcat日志"></a>logcat日志</h2><ul>
+<li>显示包含的<code>logcat logcat \| grep &lt;str&gt;</code></li>
+<li>显示包含，并忽略大小写的<code>logcat logcat \| grep -i &lt;str&gt;</code></li>
+<li>读完所有log后返回，而不会一直等待 <code>logcat -d</code></li>
+<li>清空log并退出 <code>logcat -c</code></li>
+<li>打印最近的<code>count logcat -t &lt;count&gt;</code></li>
+<li>格式化输出Log，其中format有如下可选值：<code>logcat -v &lt;format&gt;</code></li>
+</ul>
+<blockquote>
+<p>brief — 显示优先级/标记和原始进程的PID (默认格式)<br>process — 仅显示进程PID<br>tag — 仅显示优先级/标记<br>thread — 仅显示进程：线程和优先级/标记<br>raw — 显示原始的日志信息，没有其他的元数据字段<br>time — 显示日期，调用时间，优先级/标记，PID<br>long —显示所有的元数据字段并且用空行分隔消息内容  </p>
+</blockquote>
+<h2 id="常用节点"><a href="#常用节点" class="headerlink" title="常用节点"></a>常用节点</h2><blockquote>
+<p>查看节点值，例如：<code>cat /sys/class/leds/lcd-backlight/brightness</code><br>修改节点值，例如：<code>echo 128 &gt; sys/class/leds/lcd-backlight/brightness</code></p>
+</blockquote>
+<ul>
+<li>LPM: <code>echo N &gt; /sys/modue/lpm_levels/parameters/sleep_disabled</code></li>
+<li>亮度：<code>/sys/class/leds/lcd-backlight/brightness</code></li>
+<li>CPU: <code>/sys/devices/system/cpu/cpu0/cpufreq</code></li>
+<li>GPU: <code>/sys/class/ kgsl/kgsl-3d0/gpuclk</code></li>
+<li>限频：<code>cat /data/pmlist.config</code></li>
+<li>电流：<code>cat /sys/class/power_supply/battery/current_now</code></li>
+<li>查看Power： <code>dumpsys power</code></li>
+<li>WIFI :<code>data/misc/wifi/wpa_supplicant.conf</code></li>
+<li>持有wake_lock:<code>echo a&gt; sys/power/wake_lock</code></li>
+<li>释放wake_lock:<code>echo a&gt; sys/power/wake_unlock</code></li>
+<li>查看Wakeup_source: <code>cat sys/kernel/debug/wakeup_sources</code></li>
+<li>Display(关闭AD):<code>mv /data/misc/display/calib.cfg /data/misc/display/calib.cfg.bak 重启</code></li>
+<li>关闭cabc：<code>echo 0 &gt; /sys/device/virtual/graphics/fb0/cabc_onoff</code></li>
+<li>打开cabc：<code>echo 3 &gt; /sys/device/virtual/graphics/fb0/cabc_onoff</code></li>
+<li>systrace：<code>sdk/tools/monitor</code></li>
+<li>限频：<code>echo /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1497600</code></li>
+<li>当出现read-only 且 remount命令不管用时：<code>adb shell mount -o rw,remount /</code></li>
+<li>进入9008模式： <code>adb reboot edl</code></li>
+<li>查看高通gpio：<code>sys/class/private/tlmm</code>或者 <code>sys/private/tlmm</code></li>
+<li>查看gpio占用情况：<code>sys/kernle/debug/gpio</code></li>
+</ul>
+<h2 id="远程ADB"><a href="#远程ADB" class="headerlink" title="远程ADB"></a>远程ADB</h2><p>为避免使用数据线，可通过wifi通信，前提是手机与PC处于同一局域网</p>
+<h3 id="启动方法"><a href="#启动方法" class="headerlink" title="启动方法"></a>启动方法</h3><pre><code>adb tcpip 5555  //这一步，必须通过数据线把手机与PC连接后再执行  
+adb connect &lt;手机IP&gt;</code></pre><h3 id="停止方法"><a href="#停止方法" class="headerlink" title="停止方法"></a>停止方法</h3><pre><code>adb disconnect //断开wifi连接
+adb usb //切换到usb模式</code></pre><h2 id="常用操作示例"><a href="#常用操作示例" class="headerlink" title="常用操作示例"></a>常用操作示例</h2><ul>
+<li>查看当前 <code>ls</code></li>
+<li>打印当前路径 <code>pwd</code></li>
+<li>查看当前连接的设备 <code>adb devices</code></li>
+<li>终止adb服务进程 <code>adb kill-server</code></li>
+<li>重启adb服务进程 <code>adb start-server</code></li>
+<li>PID是:8607 查看某个进程的日志 <code>adb logcat -v process |grep 8607</code></li>
+<li>清理缓存 <code>logcat -c</code></li>
+<li>打印xys标签log <code>adb logcat -s xys</code></li>
+<li>打印192.168.56.101:5555设备里的xys标签log <code>adb -s 192.168.56.101:5555 logcat -s xys</code></li>
+<li>打印在ActivityManager标签里包含start的日志 <code>adb logcat -s ActivityManager | findstr &quot;START&quot;</code></li>
+</ul>
+<blockquote>
+<p>“-s”选项 : 设置输出日志的标签, 只显示该标签的日志;<br>“-f”选项 : 将日志输出到文件, 默认输出到标准输出流中, -f 参数执行不成功;<br>“-r”选项 : 按照每千字节输出日志, 需要 -f 参数, 不过这个命令没有执行成功;<br>“-n”选项 : 设置日志输出的最大数目, 需要 -r 参数, 这个执行 感觉 跟 adb logcat 效果一样;<br>“-v”选项 : 设置日志的输出格式, 注意只能设置一项;<br>“-c”选项 : 清空所有的日志缓存信息;<br>“-d”选项 : 将缓存的日志输出到屏幕上, 并且不会阻塞;<br>“-t”选项 : 输出最近的几行日志, 输出完退出, 不阻塞;<br>“-g”选项 : 查看日志缓冲区信息;<br>“-b”选项 : 加载一个日志缓冲区, 默认是 main, 下面详解;<br>“-B”选项 : 以二进制形式输出日志;  </p>
+</blockquote>
+<ul>
+<li>重启机器 <code>adb reboot</code></li>
+<li>获取序列号 <code>adb get-serialno</code></li>
+<li>重启到bootloader，即刷机模式 <code>adb reboot bootloader</code></li>
+<li>重启到recovery，即恢复模式 <code>adb reboot recovery</code></li>
+<li>安装APK：adb install <apkfile> //比如：<code>adb install baidu.apk</code></apkfile></li>
+<li>安装apk到sd卡： adb install -s <apkfile> // 比如：<code>adb install -s baidu.apk</code></apkfile></li>
+<li>卸载APK：adb uninstall <package> //比如：<code>adb uninstall com.baidu.search</code></package></li>
+<li>获取机器MAC地址 <code>adb shell cat /sys/class/net/wlan0/address</code></li>
+<li>启动应用：adb shell am start -n <package_name>/.<activity_class_name> <ul>
+<li>例如:<code>adb shell am start -n yf.o2o.store/yf.o2o.store.activity.LoginActivity</code></li>
+</ul>
+</activity_class_name></package_name></li>
+<li>查看占用内存排序  <code>adb shell top</code></li>
+<li>查看占用内存前6的app：<code>adb shell top -m 6</code></li>
+<li>刷新一次内存信息，然后返回：<code>adb shell top -n 1</code></li>
+<li>查询各进程内存使用情况：<code>adb shell procrank</code></li>
+<li>杀死一个进程：<code>adb shell kill [pid]</code></li>
+<li>查看进程列表：<code>adb shell ps</code></li>
+<li>查看指定进程状态：<code>adb shell ps -x [PID]</code></li>
+<li>查看后台services信息： <code>adb shell service list</code></li>
+<li>查看当前内存占用： <code>adb shell cat /proc/meminfo</code></li>
+<li>查看IO内存分区：<code>adb shell cat /proc/iomem</code></li>
+<li>将system分区重新挂载为可读写分区：<code>adb remount</code></li>
+<li>从本地复制文件到设备： <code>adb push &lt;local&gt; &lt;remote&gt;</code></li>
+<li>从设备复制文件到本地： <code>adb pull &lt;remote&gt; &lt;local&gt;</code></li>
+<li>列出目录下的文件和文件夹，等同于dos中的dir命令：<code>adb shell ls</code></li>
+<li>进入文件夹，等同于dos中的cd 命令：<code>adb shell cd &lt;folder&gt;</code></li>
+<li>重命名文件： <code>adb shell rename path/oldfilename path/newfilename</code></li>
+<li>删除system/avi.apk： <code>adb shell rm /system/avi.apk</code></li>
+<li>删除文件夹及其下面所有文件：<code>adb shell rm -r &lt;folder&gt;</code></li>
+<li>移动文件：<code>adb shell mv path/file newpath/file</code></li>
+<li>设置文件权限：<code>adb shell chmod 777 /system/fonts/DroidSansFallback.ttf</code></li>
+<li>新建文件夹：<code>adb shell mkdir path/foldelname</code></li>
+<li>查看文件内容：<code>adb shell cat &lt;file&gt;</code></li>
+<li>查看wifi密码：<code>adb shell cat /data/misc/wifi/*.conf</code></li>
+<li>清除log缓存：<code>adb logcat -c</code></li>
+<li>查看bug报告：<code>adb bugreport</code></li>
+<li>获取设备名称：<code>adb shell cat /system/build.prop</code></li>
+<li>查看ADB帮助：<code>adb help</code></li>
+<li>跑monkey：<code>adb shell monkey -v -p your.package.name 500</code> <code>adb -s 192.168.244.151:5555 shell monkey -v -p com.bolexim 500</code></li>
+</ul>
+<h2 id="附表"><a href="#附表" class="headerlink" title="附表"></a>附表</h2><p>下表中， 箭头左边为keycode值，箭头右边为keycode的含义，部分用中文标注</p>
+<pre><code>0 –&gt; “KEYCODE_UNKNOWN”
+1 –&gt; “KEYCODE_MENU”
+2 –&gt; “KEYCODE_SOFT_RIGHT”
+3 –&gt; “KEYCODE_HOME” //Home键
+4 –&gt; “KEYCODE_BACK” //返回键
+5 –&gt; “KEYCODE_CALL” 
+6 –&gt; “KEYCODE_ENDCALL” 
+7 –&gt; “KEYCODE_0” //数字键0
+8 –&gt; “KEYCODE_1” 
+9 –&gt; “KEYCODE_2” 
+10 –&gt; “KEYCODE_3”
+11 –&gt; “KEYCODE_4” 
+12 –&gt; “KEYCODE_5” 
+13 –&gt; “KEYCODE_6” 
+14 –&gt; “KEYCODE_7” 
+15 –&gt; “KEYCODE_8” 
+16 –&gt; “KEYCODE_9” 
+17 –&gt; “KEYCODE_STAR” 
+18 –&gt; “KEYCODE_POUND” 
+19 –&gt; “KEYCODE_DPAD_UP” 
+20 –&gt; “KEYCODE_DPAD_DOWN” 
+21 –&gt; “KEYCODE_DPAD_LEFT”
+22 –&gt; “KEYCODE_DPAD_RIGHT” 
+23 –&gt; “KEYCODE_DPAD_CENTER” 
+24 –&gt; “KEYCODE_VOLUME_UP” //音量键+
+25 –&gt; “KEYCODE_VOLUME_DOWN” //音量键-
+26 –&gt; “KEYCODE_POWER” //Power键
+27 –&gt; “KEYCODE_CAMERA” 
+28 –&gt; “KEYCODE_CLEAR”
+29 –&gt; “KEYCODE_A” //字母键A
+30 –&gt; “KEYCODE_B” 
+31 –&gt; “KEYCODE_C” 
+32 –&gt; “KEYCODE_D” 
+33 –&gt; “KEYCODE_E” 
+34 –&gt; “KEYCODE_F” 
+35 –&gt; “KEYCODE_G”
+36 –&gt; “KEYCODE_H”
+37 –&gt; “KEYCODE_I”
+38 –&gt; “KEYCODE_J” 
+39 –&gt; “KEYCODE_K” 
+40 –&gt; “KEYCODE_L” 
+41 –&gt; “KEYCODE_M”
+42 –&gt; “KEYCODE_N” 
+43 –&gt; “KEYCODE_O” 
+44 –&gt; “KEYCODE_P” 
+45 –&gt; “KEYCODE_Q” 
+46 –&gt; “KEYCODE_R”
+47 –&gt; “KEYCODE_S”
+48 –&gt; “KEYCODE_T” 
+49 –&gt; “KEYCODE_U” 
+50 –&gt; “KEYCODE_V” 
+51 –&gt; “KEYCODE_W” 
+52 –&gt; “KEYCODE_X”
+53 –&gt; “KEYCODE_Y” 
+54 –&gt; “KEYCODE_Z”
+55 –&gt; “KEYCODE_COMMA” 
+56 –&gt; “KEYCODE_PERIOD”
+57 –&gt; “KEYCODE_ALT_LEFT” 
+58 –&gt; “KEYCODE_ALT_RIGHT” 
+59 –&gt; “KEYCODE_SHIFT_LEFT” 
+60 –&gt; “KEYCODE_SHIFT_RIGHT”
+61 -&gt; “KEYCODE_TAB” 
+62 –&gt; “KEYCODE_SPACE” 
+63 –&gt; “KEYCODE_SYM” 
+64 –&gt; “KEYCODE_EXPLORER” 
+65 –&gt; “KEYCODE_ENVELOPE” 
+66 –&gt; “KEYCODE_ENTER” //回车键
+67 –&gt; “KEYCODE_DEL” 
+68 –&gt; “KEYCODE_GRAVE” 
+69 –&gt; “KEYCODE_MINUS” 
+70 –&gt; “KEYCODE_EQUALS” 
+71 –&gt; “KEYCODE_LEFT_BRACKET” 
+72 –&gt; “KEYCODE_RIGHT_BRACKET” 
+73 –&gt; “KEYCODE_BACKSLASH” 
+74 –&gt; “KEYCODE_SEMICOLON” 
+75 –&gt; “KEYCODE_APOSTROPHE”
+76 –&gt; “KEYCODE_SLASH” 
+77 –&gt; “KEYCODE_AT” 
+78 –&gt; “KEYCODE_NUM” 
+79 –&gt; “KEYCODE_HEADSETHOOK” 
+80 –&gt; “KEYCODE_FOCUS”
+81 –&gt; “KEYCODE_PLUS”
+82 –&gt; “KEYCODE_MENU”
+83 –&gt; “KEYCODE_NOTIFICATION”
+84 –&gt; “KEYCODE_SEARCH”</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://9aiplay.com/record/Android-ADB常用命令/" data-id="ck0m7gzne0002l0bgasco29ky" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Adb/">Adb</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Utils/">Utils</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/record/Android-性能优化/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          转载:Android 性能优化
+        
+      </div>
+    </a>
+  
+  
+    <a href="/record/Android-Handler的使用/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Android Handler的使用</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Adb/">Adb</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Adb/Utils/">Utils</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/AsyncTask/">AsyncTask</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/AutoSearchBug/">AutoSearchBug</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Fragment/">Fragment</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Fragment/Activity/">Activity</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Handler/">Handler</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Java/">Java</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Java/线程/">线程</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Java/线程/join/">join</a></li></ul></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Ui库/">Ui库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/View/">View</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/性能优化/">性能优化</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/重启app/">重启app</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/面试题/">面试题</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo/">Hexo</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/Git/">Git</a></li></ul></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Activity/">Activity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Adb/">Adb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AsyncTask/">AsyncTask</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AutoSearchBug/">AutoSearchBug</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Fragment/">Fragment</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Handler/">Handler</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Logcat/">Logcat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ui库/">Ui库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Utils/">Utils</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/View/">View</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/join/">join</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/性能优化/">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/线程/">线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/转载/">转载</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/重启app/">重启app</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试题/">面试题</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Activity/" style="font-size: 10px;">Activity</a> <a href="/tags/Adb/" style="font-size: 10px;">Adb</a> <a href="/tags/Android/" style="font-size: 20px;">Android</a> <a href="/tags/AsyncTask/" style="font-size: 10px;">AsyncTask</a> <a href="/tags/AutoSearchBug/" style="font-size: 10px;">AutoSearchBug</a> <a href="/tags/Fragment/" style="font-size: 10px;">Fragment</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/Handler/" style="font-size: 15px;">Handler</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Logcat/" style="font-size: 10px;">Logcat</a> <a href="/tags/Ui库/" style="font-size: 10px;">Ui库</a> <a href="/tags/Utils/" style="font-size: 10px;">Utils</a> <a href="/tags/View/" style="font-size: 10px;">View</a> <a href="/tags/join/" style="font-size: 10px;">join</a> <a href="/tags/性能优化/" style="font-size: 10px;">性能优化</a> <a href="/tags/线程/" style="font-size: 10px;">线程</a> <a href="/tags/转载/" style="font-size: 15px;">转载</a> <a href="/tags/重启app/" style="font-size: 10px;">重启app</a> <a href="/tags/面试题/" style="font-size: 10px;">面试题</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/record/GIT常用操作/">GIT常用操作</a>
+          </li>
+        
+          <li>
+            <a href="/record/Handler都没搞定，拿什么去跳槽！/">Handler都没搞定，拿什么去跳槽！</a>
+          </li>
+        
+          <li>
+            <a href="/record/Android大厂面试题锦集/">Android大厂面试题锦集</a>
+          </li>
+        
+          <li>
+            <a href="/record/hexo常用命令/">hexo常用命令</a>
+          </li>
+        
+          <li>
+            <a href="/record/Android获取Imageview上的图片/">Android获取Imageview上的图片</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 zhangyong<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

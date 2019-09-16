@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>Android Handler的使用 | 张永的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Handler概述我们都悉知在Android中，如果某项任务的执行时间太长就会导致程序ANR(Application Not Response)，所以我们都会通过将耗时操作转移到子线程执行，从而避免ANR的出现。但是Android规定UI的更新只能在主线程中进行，一旦在子线程中访问UI就会抛出异常。而Handler正是Android为了解决这一矛盾提供的解决方式。首先明确几个需要着重理解的概念：">
+<meta name="keywords" content="Android,Handler">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android Handler的使用">
+<meta property="og:url" content="http://9aiplay.com/record/Android-Handler的使用/index.html">
+<meta property="og:site_name" content="张永的个人博客">
+<meta property="og:description" content="Handler概述我们都悉知在Android中，如果某项任务的执行时间太长就会导致程序ANR(Application Not Response)，所以我们都会通过将耗时操作转移到子线程执行，从而避免ANR的出现。但是Android规定UI的更新只能在主线程中进行，一旦在子线程中访问UI就会抛出异常。而Handler正是Android为了解决这一矛盾提供的解决方式。首先明确几个需要着重理解的概念：">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-02-27T01:15:58.634Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android Handler的使用">
+<meta name="twitter:description" content="Handler概述我们都悉知在Android中，如果某项任务的执行时间太长就会导致程序ANR(Application Not Response)，所以我们都会通过将耗时操作转移到子线程执行，从而避免ANR的出现。但是Android规定UI的更新只能在主线程中进行，一旦在子线程中访问UI就会抛出异常。而Handler正是Android为了解决这一矛盾提供的解决方式。首先明确几个需要着重理解的概念：">
+  
+    <link rel="alternate" href="/atom.xml" title="张永的个人博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">张永的个人博客</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://9aiplay.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Android-Handler的使用" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/record/Android-Handler的使用/" class="article-date">
+  <time datetime="2018-05-05T04:28:44.000Z" itemprop="datePublished">2018-05-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a>►<a class="article-category-link" href="/categories/Android/Handler/">Handler</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android Handler的使用
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="Handler概述"><a href="#Handler概述" class="headerlink" title="Handler概述"></a>Handler概述</h2><p>我们都悉知在Android中，如果某项任务的执行时间太长就会导致程序ANR(Application Not Response)，所以我们都会通过将耗时操作转移到子线程执行，从而避免ANR的出现。但是Android规定UI的更新只能在主线程中进行，一旦在子线程中访问UI就会抛出异常。而Handler正是Android为了解决这一矛盾提供的解决方式。<br>首先明确几个需要着重理解的概念：</p>
+<ul>
+<li>Message：消息，携带了描述信息和数据，是Handler进行处理的对象</li>
+<li>MessageQueue：消息队列，用来存放所有通过Handler发布的消息，因为是队列，所以是先进先出的。</li>
+<li>Looper：不断循环从MessageQueue中取出Message，并交给相应的Handler进行处理。</li>
+<li>Handler：负责将Message添加到消息队列以及从Looper抽取出来的Message进行处理。</li>
+</ul>
+<h2 id="创建Handler实例"><a href="#创建Handler实例" class="headerlink" title="创建Handler实例"></a>创建Handler实例</h2><p>首先先进行Handler的实例创建</p>
+<pre><code>new Handler();
+    Log.d(&quot;main&quot;, &quot;handler1&quot;);
+
+new Thread(new Runnable() {
+    @Override
+    public void run() {
+      new Handler();
+      Log.d(&quot;thread&quot;, &quot;handler2&quot;);
+    }
+}).start();</code></pre><p>我们可以发现，当执行到新线程中创建Handler时会抛出异常：</p>
+<pre><code>java.lang.RuntimeException: Can&apos;t create handler inside thread that has not called Looper.prepare()</code></pre><p>而如果我们在代码中把<code>Looper.prepare()</code>加上，就可以正常运行：</p>
+<pre><code>new Thread(new Runnable() {
+@Override
+public void run() {
+  Looper.prepare();
+  new Handler();
+  Log.d(&quot;thread&quot;, &quot;handler2&quot;);
+}
+}).start();</code></pre><p>我们回过头来看看Handler实例的时候都做了些什么：</p>
+<pre><code>public Handler() {
+    if (FIND_POTENTIAL_LEAKS) {
+        final Class&lt;? extends Handler&gt; klass = getClass();
+        if ((klass.isAnonymousClass() || klass.isMemberClass() || klass.isLocalClass()) &amp;&amp;
+                (klass.getModifiers() &amp; Modifier.STATIC) == 0) {
+            Log.w(TAG, &quot;The following Handler class should be static or leaks might occur: &quot; +
+                klass.getCanonicalName());
+        }
+    }
+
+    mLooper = Looper.myLooper();
+    if (mLooper == null) {
+        throw new RuntimeException(
+            &quot;Can&apos;t create handler inside thread that has not called Looper.prepare()&quot;);
+    }
+    mQueue = mLooper.mQueue;
+    mCallback = callback;
+}</code></pre><p>可以看到，当<code>mLooper == null</code>时就会抛出刚所说的异常。那么Looper对象何时为空呢？</p>
+<pre><code>public static final Looper myLooper() {  
+    return (Looper)sThreadLocal.get();  
+}</code></pre><p>可以看到Looper对象是从sThreadLocal中取出。而通过Looper.prepare()就可以设置这个对象：</p>
+<pre><code>private static void prepare(boolean quitAllowed) {
+    if (sThreadLocal.get() != null) {
+        throw new RuntimeException(&quot;Only one Looper may be created per thread&quot;);
+    }
+    sThreadLocal.set(new Looper(quitAllowed));
+}</code></pre><p>那么为什么在主线程中创建Handler的时候没有报错呢？答案就在ActivityThread中的main()方法</p>
+<pre><code>public static void main(String[] args) {
+    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, &quot;ActivityThreadMain&quot;);
+    SamplingProfilerIntegration.start();
+
+    // CloseGuard defaults to true and can be quite spammy.  We
+    // disable it here, but selectively enable it later (via
+    // StrictMode) on debug builds, but using DropBox, not logs.
+    CloseGuard.setEnabled(false);
+
+    Environment.initForCurrentUser();
+
+    // Set the reporter for event logging in libcore
+    EventLogger.setReporter(new EventLoggingReporter());
+
+    // Make sure TrustedCertificateStore looks in the right place for CA certificates
+    final File configDir = Environment.getUserConfigDirectory(UserHandle.myUserId());
+    TrustedCertificateStore.setDefaultUserDirectory(configDir);
+
+    Process.setArgV0(&quot;&lt;pre-initialized&gt;&quot;);
+
+    //关键点
+    Looper.prepareMainLooper();
+
+    ActivityThread thread = new ActivityThread();
+    thread.attach(false);
+
+    if (sMainThreadHandler == null) {
+        sMainThreadHandler = thread.getHandler();
+    }
+
+    if (false) {
+        Looper.myLooper().setMessageLogging(new
+                LogPrinter(Log.DEBUG, &quot;ActivityThread&quot;));
+    }
+
+    // End of event ActivityThreadMain.
+    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+    Looper.loop();
+
+    throw new RuntimeException(&quot;Main thread loop unexpectedly exited&quot;);
+}
+
+public static void prepareMainLooper() {
+    prepare(false);
+    synchronized (Looper.class) {
+        if (sMainLooper != null) {
+            throw new IllegalStateException(&quot;The main Looper has already been prepared.&quot;);
+        }
+        sMainLooper = myLooper();
+    }
+}</code></pre><p>可以看到在Activity生命周期开始的后就通过调用Looper.prepareMainLooper()创建了一个主线程的Looper。</p>
+<p>所以主线程可以直接创建Handler对象，而子线程则需要先调用Looper.prepare()</p>
+<h2 id="Handler消息发送"><a href="#Handler消息发送" class="headerlink" title="Handler消息发送"></a>Handler消息发送</h2><p>先写一个简单的消息发送示例：</p>
+<pre><code>Handler handler = new Handler();
+Message msg = new Message();
+msg.arg1 = 1;
+Bundle bundle = new Bundle();
+bundle.putString(&quot;data&quot;, &quot;test&quot;);
+msg.setData(bundle);
+handler.sendMessage(msg);</code></pre><p>Handler提供了几个发送的方法，其中经过辗转后面都会调用该方法<code>sendMessageAtTime(Message msg, long uptimeMillis)：</code></p>
+<pre><code>public boolean sendMessageAtTime(Message msg, long uptimeMillis) {
+    MessageQueue queue = mQueue;
+    if (queue == null) {
+        RuntimeException e = new RuntimeException(
+                this + &quot; sendMessageAtTime() called with no mQueue&quot;);
+        Log.w(&quot;Looper&quot;, e.getMessage(), e);
+        return false;
+    }
+    return enqueueMessage(queue, msg, uptimeMillis);
+}</code></pre><p>通过enqueueMessage()方法进行消息入队。</p>
+<pre><code>MessageQueue.enqueueMessage(Message msg, long when)：
+
+
+boolean enqueueMessage(Message msg, long when) {
+    if (msg.target == null) {
+        throw new IllegalArgumentException(&quot;Message must have a target.&quot;);
+    }
+    if (msg.isInUse()) {
+        throw new IllegalStateException(msg + &quot; This message is already in use.&quot;);
+    }
+
+    synchronized (this) {
+        if (mQuitting) {
+            IllegalStateException e = new IllegalStateException(
+                    msg.target + &quot; sending message to a Handler on a dead thread&quot;);
+            Log.w(TAG, e.getMessage(), e);
+            msg.recycle();
+            return false;
+        }
+
+        msg.markInUse();
+        msg.when = when;
+        Message p = mMessages;
+        boolean needWake;
+        if (p == null || when == 0 || when &lt; p.when) {
+            // New head, wake up the event queue if blocked.
+            msg.next = p;
+            mMessages = msg;
+            needWake = mBlocked;
+        } else {
+            // Inserted within the middle of the queue.  Usually we don&apos;t have to wake
+            // up the event queue unless there is a barrier at the head of the queue
+            // and the message is the earliest asynchronous message in the queue.
+            needWake = mBlocked &amp;&amp; p.target == null &amp;&amp; msg.isAsynchronous();
+            Message prev;
+            for (;;) {
+                prev = p;
+                p = p.next;
+                if (p == null || when &lt; p.when) {
+                    break;
+                }
+                if (needWake &amp;&amp; p.isAsynchronous()) {
+                    needWake = false;
+                }
+            }
+            msg.next = p; // invariant: p == prev.next
+            prev.next = msg;
+        }
+
+        // We can assume mPtr != 0 because mQuitting is false.
+        if (needWake) {
+            nativeWake(mPtr);
+        }
+    }
+    return true;
+}</code></pre><p>因为存在多线程插入消息，所以需要加上同步；参数<code>when=SystemClock.uptimeMillis()+delayMillis</code>，如果调用的是post方法则delayMillis为0；mMessages代表的是消息队列的头部，当它为空的时候表示队列没有消息，并且根据当前的Loop线程的状态来判断是否需要唤醒队列；否则插入消息并且根据when来对msg进行队列的排序；最后判断是否需要唤醒Looper线程，至此完成了消息的加入。</p>
+<h2 id="Handler消息处理"><a href="#Handler消息处理" class="headerlink" title="Handler消息处理"></a>Handler消息处理</h2><p>在上面提到的ActivityThread.main()方法中，不仅调用了Looper.prepareMainLooper,而且也调用了Looper.loop方法</p>
+<p>public static void loop() {<br>        final Looper me = myLooper();<br>        if (me == null) {<br>            throw new RuntimeException(“No Looper; Looper.prepare() wasn’t called on this thread.”);<br>        }<br>        final MessageQueue queue = me.mQueue;</p>
+<pre><code>    // Make sure the identity of this thread is that of the local process,
+    // and keep track of what that identity token actually is.
+    Binder.clearCallingIdentity();
+    final long ident = Binder.clearCallingIdentity();
+
+    for (;;) {
+        Message msg = queue.next(); // might block
+        if (msg == null) {
+            // No message indicates that the message queue is quitting.
+            return;
+        }
+
+        // This must be in a local variable, in case a UI event sets the logger
+        final Printer logging = me.mLogging;
+        if (logging != null) {
+            logging.println(&quot;&gt;&gt;&gt;&gt;&gt; Dispatching to &quot; + msg.target + &quot; &quot; +
+                    msg.callback + &quot;: &quot; + msg.what);
+        }
+
+        final long slowDispatchThresholdMs = me.mSlowDispatchThresholdMs;
+
+        final long traceTag = me.mTraceTag;
+        if (traceTag != 0 &amp;&amp; Trace.isTagEnabled(traceTag)) {
+            Trace.traceBegin(traceTag, msg.target.getTraceName(msg));
+        }
+        final long start = (slowDispatchThresholdMs == 0) ? 0 : SystemClock.uptimeMillis();
+        final long end;
+        try {
+            msg.target.dispatchMessage(msg);
+            end = (slowDispatchThresholdMs == 0) ? 0 : SystemClock.uptimeMillis();
+        } finally {
+            if (traceTag != 0) {
+                Trace.traceEnd(traceTag);
+            }
+        }
+        if (slowDispatchThresholdMs &gt; 0) {
+            final long time = end - start;
+            if (time &gt; slowDispatchThresholdMs) {
+                Slog.w(TAG, &quot;Dispatch took &quot; + time + &quot;ms on &quot;
+                        + Thread.currentThread().getName() + &quot;, h=&quot; +
+                        msg.target + &quot; cb=&quot; + msg.callback + &quot; msg=&quot; + msg.what);
+            }
+        }
+
+        if (logging != null) {
+            logging.println(&quot;&lt;&lt;&lt;&lt;&lt; Finished to &quot; + msg.target + &quot; &quot; + msg.callback);
+        }
+
+        // Make sure that during the course of dispatching the
+        // identity of the thread wasn&apos;t corrupted.
+        final long newIdent = Binder.clearCallingIdentity();
+        if (ident != newIdent) {
+            Log.wtf(TAG, &quot;Thread identity changed from 0x&quot;
+                    + Long.toHexString(ident) + &quot; to 0x&quot;
+                    + Long.toHexString(newIdent) + &quot; while dispatching to &quot;
+                    + msg.target.getClass().getName() + &quot; &quot;
+                    + msg.callback + &quot; what=&quot; + msg.what);
+        }
+
+        msg.recycleUnchecked();
+    }
+}</code></pre><p>首先获取到当前Looper和MessageQueue实例，然后通过一个死循环经queue.next()方法获取下一个Message，当MessageQueue为空，则阻塞队列。而每当有一个消息出队的时候，都会经过msg.target.dispatchMessage(msg)，通过上面我们知道msg.target其实就是Handler。<br>那么我们就来到Handler.dispatchMessage()：</p>
+<pre><code>public void dispatchMessage(Message msg) {
+    if (msg.callback != null) {
+        handleCallback(msg);
+    } else {
+        if (mCallback != null) {
+            if (mCallback.handleMessage(msg)) {
+                return;
+            }
+        }
+        handleMessage(msg);
+    }
+}</code></pre><p>如果mCallback不为空，则执行mCallback.handleMessage(msg)；否则走Handler.handleCallback(msg)方法。所以我们可以通过handleMessage()方法获取到之前发送的消息！</p>
+<h2 id="Handler注意事项"><a href="#Handler注意事项" class="headerlink" title="Handler注意事项"></a>Handler注意事项</h2><pre><code>Handler mHandler = new Handler(){
+    @Override
+    public void handleMessage(Message msg) {
+      super.handleMessage(msg);
+    }
+  };</code></pre><p>由于java中非静态内部类和匿名内部类都会隐式持有当前类的外部引用，而上图所示的使用方式正是因为Handler是非静态内部类所以其持有当前Activity的隐式引用，如果Handler没有被释放，其所持有的外部引用也就是Activity也无法被释放，本该被回收的对象不能被回收而停留在堆内存中，这就产生了内存泄漏。</p>
+<p>而面对这种情况，我们通常的解决方式就是使用静态内部类并继承Handler（或者也可以单独存放成一个类文件）。因为静态的内部类不会持有外部类的引用，所以不会导致外部类实例的内存泄露。当你需要在静态内部类中调用外部的Activity时，我们可以使用弱引用来处理。如下所示：</p>
+<pre><code>private static class MyHandler extends Handler {
+
+    //持有弱引用HandlerActivity,GC回收时会被回收掉.  
+    private final WeakReference&lt;MainActivity&gt; mActivty;
+
+    public MyHandler(MainActivity activity) {
+      mActivty = new WeakReference&lt;&gt;(activity);
+    }
+
+    @Override
+    public void handleMessage(Message msg) {
+      MainActivity activity = mActivty.get();
+      super.handleMessage(msg);
+      if (activity != null) {
+        //执行业务逻辑  
+      }
+        }
+}</code></pre><p>至此完成对Handler分析。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://9aiplay.com/record/Android-Handler的使用/" data-id="ck0m7gzo2000fl0bgrk7hf2no" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Handler/">Handler</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/record/Android-ADB常用命令/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Android-ADB常用命令
+        
+      </div>
+    </a>
+  
+  
+    <a href="/record/application-restart/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Android重启app功能</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Adb/">Adb</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Adb/Utils/">Utils</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/AsyncTask/">AsyncTask</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/AutoSearchBug/">AutoSearchBug</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Fragment/">Fragment</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Fragment/Activity/">Activity</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Handler/">Handler</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Java/">Java</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Java/线程/">线程</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Java/线程/join/">join</a></li></ul></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Ui库/">Ui库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/View/">View</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/性能优化/">性能优化</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/重启app/">重启app</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/面试题/">面试题</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo/">Hexo</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/Git/">Git</a></li></ul></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Activity/">Activity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Adb/">Adb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AsyncTask/">AsyncTask</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AutoSearchBug/">AutoSearchBug</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Fragment/">Fragment</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Handler/">Handler</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Logcat/">Logcat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ui库/">Ui库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Utils/">Utils</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/View/">View</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/join/">join</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/性能优化/">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/线程/">线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/转载/">转载</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/重启app/">重启app</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试题/">面试题</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Activity/" style="font-size: 10px;">Activity</a> <a href="/tags/Adb/" style="font-size: 10px;">Adb</a> <a href="/tags/Android/" style="font-size: 20px;">Android</a> <a href="/tags/AsyncTask/" style="font-size: 10px;">AsyncTask</a> <a href="/tags/AutoSearchBug/" style="font-size: 10px;">AutoSearchBug</a> <a href="/tags/Fragment/" style="font-size: 10px;">Fragment</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/Handler/" style="font-size: 15px;">Handler</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Logcat/" style="font-size: 10px;">Logcat</a> <a href="/tags/Ui库/" style="font-size: 10px;">Ui库</a> <a href="/tags/Utils/" style="font-size: 10px;">Utils</a> <a href="/tags/View/" style="font-size: 10px;">View</a> <a href="/tags/join/" style="font-size: 10px;">join</a> <a href="/tags/性能优化/" style="font-size: 10px;">性能优化</a> <a href="/tags/线程/" style="font-size: 10px;">线程</a> <a href="/tags/转载/" style="font-size: 15px;">转载</a> <a href="/tags/重启app/" style="font-size: 10px;">重启app</a> <a href="/tags/面试题/" style="font-size: 10px;">面试题</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/record/GIT常用操作/">GIT常用操作</a>
+          </li>
+        
+          <li>
+            <a href="/record/Handler都没搞定，拿什么去跳槽！/">Handler都没搞定，拿什么去跳槽！</a>
+          </li>
+        
+          <li>
+            <a href="/record/Android大厂面试题锦集/">Android大厂面试题锦集</a>
+          </li>
+        
+          <li>
+            <a href="/record/hexo常用命令/">hexo常用命令</a>
+          </li>
+        
+          <li>
+            <a href="/record/Android获取Imageview上的图片/">Android获取Imageview上的图片</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 zhangyong<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

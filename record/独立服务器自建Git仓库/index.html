@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>独立服务器自建Git仓库 | 张永的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="准备环境环境：   服务器 CentOS7.3 + git（version 1.8..31） 客户端 Windows7 + git（version 2.16.2.windows.1）安装GitLinux 做为服务器端系统，Windows 作为客户端系统，分别安装 Git 服务器端安装[root@VM_0_16_centos ~]# yum install -y git  安装完后，查看 Git 版">
+<meta name="keywords" content="Linux,Git">
+<meta property="og:type" content="article">
+<meta property="og:title" content="独立服务器自建Git仓库">
+<meta property="og:url" content="http://9aiplay.com/record/独立服务器自建Git仓库/index.html">
+<meta property="og:site_name" content="张永的个人博客">
+<meta property="og:description" content="准备环境环境：   服务器 CentOS7.3 + git（version 1.8..31） 客户端 Windows7 + git（version 2.16.2.windows.1）安装GitLinux 做为服务器端系统，Windows 作为客户端系统，分别安装 Git 服务器端安装[root@VM_0_16_centos ~]# yum install -y git  安装完后，查看 Git 版">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://9aiplay.com/record/%E7%8B%AC%E7%AB%8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%87%AA%E5%BB%BAGit%E4%BB%93%E5%BA%93/git_clone.png">
+<meta property="og:image" content="http://9aiplay.com/record/%E7%8B%AC%E7%AB%8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%87%AA%E5%BB%BAGit%E4%BB%93%E5%BA%93/known.png">
+<meta property="og:image" content="http://9aiplay.com/record/%E7%8B%AC%E7%AB%8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%87%AA%E5%BB%BAGit%E4%BB%93%E5%BA%93/ssh-keygen.png">
+<meta property="og:updated_time" content="2018-07-03T02:12:53.695Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="独立服务器自建Git仓库">
+<meta name="twitter:description" content="准备环境环境：   服务器 CentOS7.3 + git（version 1.8..31） 客户端 Windows7 + git（version 2.16.2.windows.1）安装GitLinux 做为服务器端系统，Windows 作为客户端系统，分别安装 Git 服务器端安装[root@VM_0_16_centos ~]# yum install -y git  安装完后，查看 Git 版">
+<meta name="twitter:image" content="http://9aiplay.com/record/%E7%8B%AC%E7%AB%8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%87%AA%E5%BB%BAGit%E4%BB%93%E5%BA%93/git_clone.png">
+  
+    <link rel="alternate" href="/atom.xml" title="张永的个人博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">张永的个人博客</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://9aiplay.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-独立服务器自建Git仓库" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/record/独立服务器自建Git仓库/" class="article-date">
+  <time datetime="2018-06-25T02:54:18.000Z" itemprop="datePublished">2018-06-25</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>►<a class="article-category-link" href="/categories/Linux/Git/">Git</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      独立服务器自建Git仓库
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="准备环境"><a href="#准备环境" class="headerlink" title="准备环境"></a>准备环境</h2><pre><code>环境：  
+服务器 CentOS7.3 + git（version 1.8..31）
+客户端 Windows7 + git（version 2.16.2.windows.1）</code></pre><h2 id="安装Git"><a href="#安装Git" class="headerlink" title="安装Git"></a>安装Git</h2><p>Linux 做为服务器端系统，Windows 作为客户端系统，分别安装 Git</p>
+<h3 id="服务器端安装"><a href="#服务器端安装" class="headerlink" title="服务器端安装"></a>服务器端安装</h3><pre><code>[root@VM_0_16_centos ~]# yum install -y git  </code></pre><p>安装完后，查看 Git 版本</p>
+<pre><code>[root@VM_0_16_centos ~]# git --version  
+git version 1.8.3.1</code></pre><h3 id="客户端安装"><a href="#客户端安装" class="headerlink" title="客户端安装"></a>客户端安装</h3><p>下载    <a href="https://git-for-windows.github.io/" target="_blank" rel="noopener">Git for Windows</a></p>
+<p>安装完之后，可以使用 Git Bash 作为命令行客户端。</p>
+<p>安装完之后，查看 Git 版本</p>
+<blockquote>
+<p>$ git –version<br>git version 2.16.2.windows.1</p>
+</blockquote>
+<h2 id="服务器端创建-git-用户，用来管理-Git-服务，并为-git-用户设置密码"><a href="#服务器端创建-git-用户，用来管理-Git-服务，并为-git-用户设置密码" class="headerlink" title="服务器端创建 git 用户，用来管理 Git 服务，并为 git 用户设置密码"></a>服务器端创建 git 用户，用来管理 Git 服务，并为 git 用户设置密码</h2><pre><code>[root@localhost home]# id git
+id: git：no such user
+[root@localhost home]# useradd git
+[root@localhost home]# passwd git</code></pre><h2 id="服务器端创建-Git-仓库"><a href="#服务器端创建-Git-仓库" class="headerlink" title="服务器端创建 Git 仓库"></a>服务器端创建 Git 仓库</h2><p>设置 /home/data/git/gittest.git 为 Git 仓库</p>
+<p>然后把 Git 仓库的 owner 修改为 git</p>
+<pre><code>[root@localhost home]# mkdir -p data/git/gittest.git
+[root@localhost home]# git init --bare data/git/gittest.git
+Initialized empty Git repository in /home/data/git/gittest.git/
+[root@localhost home]# cd data/git/
+[root@localhost git]# chown -R git:git gittest.git/</code></pre><h2 id="客户端-clone-远程仓库"><a href="#客户端-clone-远程仓库" class="headerlink" title="客户端 clone 远程仓库"></a>客户端 clone 远程仓库</h2><p>在硬盘里找一个文件夹来存放，然后从 Linux Git 服务器上 clone 项目</p>
+<blockquote>
+<p>$ git clone <a href="mailto:git@192.168.56.101" target="_blank" rel="noopener">git@192.168.56.101</a>:/home/data/gittest.git</p>
+</blockquote>
+<p><img src="../%E7%8B%AC%E7%AB%8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%87%AA%E5%BB%BAGit%E4%BB%93%E5%BA%93/git_clone.png" alt="git clone"></p>
+<p>当第一次连接到目标 Git 服务器时会得到一个提示：</p>
+<blockquote>
+<p>The authenticity of host ‘192.168.56.101 (192.168.56.101)’ can’t be established.<br>RSA key fingerprint is SHA256:Ve6WV/SCA059EqoUOzbFoZdfmMh3B259nigfmvdadqQ.<br>Are you sure you want to continue connecting (yes/no)? </p>
+</blockquote>
+<p>选择 yes：</p>
+<blockquote>
+<p>Warning: Permanently added ‘192.168.56.101’ (RSA) to the list of known hosts.</p>
+</blockquote>
+<p>此时 C:\Users\用户名.ssh 下会多出一个文件 known_hosts，以后在这台电脑上再次连接目标 Git 服务器时不会再提示上面的语句。<br><img src="../%E7%8B%AC%E7%AB%8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%87%AA%E5%BB%BAGit%E4%BB%93%E5%BA%93/known.png" alt="known"></p>
+<h2 id="客户端创建-SSH-公钥和私钥"><a href="#客户端创建-SSH-公钥和私钥" class="headerlink" title="客户端创建 SSH 公钥和私钥"></a>客户端创建 SSH 公钥和私钥</h2><blockquote>
+<p>$ ssh-keygen -t rsa -C “<a href="mailto:472323087@qq.com" target="_blank" rel="noopener">472323087@qq.com</a>“</p>
+</blockquote>
+<p><img src="../%E7%8B%AC%E7%AB%8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%87%AA%E5%BB%BAGit%E4%BB%93%E5%BA%93/ssh-keygen.png" alt></p>
+<p>此时 C:\Users\用户名.ssh 下会多出两个文件 id_rsa 和 id_rsa.pub</p>
+<p>id_rsa 是私钥</p>
+<p>id_rsa.pub 是公钥</p>
+<h2 id="服务器端-Git-打开-RSA-认证"><a href="#服务器端-Git-打开-RSA-认证" class="headerlink" title="服务器端 Git 打开 RSA 认证"></a>服务器端 Git 打开 RSA 认证</h2><p>进入 /etc/ssh 目录，编辑 sshd_config，打开以下三个配置的注释：</p>
+<pre><code>RSAAuthentication yes
+PubkeyAuthentication yes
+AuthorizedKeysFile .ssh/authorized_keys</code></pre><p>保存并重启 sshd 服务：</p>
+<pre><code>[root@localhost ssh]# service sshd restart</code></pre><p>由 AuthorizedKeysFile 得知公钥的存放路径是 .ssh/authorized_keys，实际上是 $Home/.ssh/authorized_keys，由于管理 Git 服务的用户是 git，所以实际存放公钥的路径是 /home/git/.ssh/authorized_keys</p>
+<p>在 /home/git/ 下创建目录 .ssh</p>
+<pre><code>[root@localhost git]# cd /home/git/  
+[root@localhost git]# pwd  
+/home/git  
+[root@localhost git]# mkdir .ssh  
+[root@localhost git]# ls -a   
+. .. .bash_logout .bash_profile .bashrc .gnome2 .mozilla .ssh</code></pre><p>然后把 .ssh 文件夹的 owner 修改为 git</p>
+<pre><code>[root@localhost git]# chown -R git:git .ssh  
+[root@localhost git]# ll -a  
+总用量 32  
+drwx------. 5 git  git  4096 8月  28 20:04 .  
+drwxr-xr-x. 8 root root 4096 8月  28 19:32 ..  
+-rw-r--r--. 1 git  git18 10月 16 2014 .bash_logout  
+-rw-r--r--. 1 git  git   176 10月 16 2014 .bash_profile  
+-rw-r--r--. 1 git  git   124 10月 16 2014 .bashrc  
+drwxr-xr-x. 2 git  git  4096 11月 12 2010 .gnome2  
+drwxr-xr-x. 4 git  git  4096 5月   8 12:22 .mozilla  </code></pre><blockquote>
+<p>drwxr-xr-x. 2 git  git  4096 8月  28 20:08 .ssh  </p>
+</blockquote>
+<h2 id="将客户端公钥导入服务器端-home-git-ssh-authorized-keys-文件"><a href="#将客户端公钥导入服务器端-home-git-ssh-authorized-keys-文件" class="headerlink" title="将客户端公钥导入服务器端 /home/git/.ssh/authorized_keys 文件"></a>将客户端公钥导入服务器端 /home/git/.ssh/authorized_keys 文件</h2><p>回到 Git Bash 下，导入文件：</p>
+<blockquote>
+<p>$ ssh <a href="mailto:git@192.168.56.101" target="_blank" rel="noopener">git@192.168.56.101</a> ‘cat &gt;&gt; .ssh/authorized_keys’ &lt; ~/.ssh/id_rsa.pub</p>
+</blockquote>
+<p>需要输入服务器端 git 用户的密码</p>
+<p>或或者用FileZilla类似软件直接复制</p>
+<pre><code>[root@localhost .ssh]# cd /home/git/.ssh/  
+[root@localhost .ssh]# cat id_rsa.pub &gt;&gt; authorized_keys</code></pre><p>回到服务器端，查看 .ssh 下是否存在 authorized_keys 文件：</p>
+<pre><code>[root@localhost git]# cd .ssh  
+[root@localhost .ssh]# ll  
+总用量 4  
+-rw-rw-r--. 1 git git 398 8月  28 20:08 authorized_keys</code></pre><p>可以查看一下是否是客户端生成的公钥。</p>
+<p>重要：</p>
+<p>修改 .ssh 目录的权限为 700</p>
+<p>修改 .ssh/authorized_keys 文件的权限为 600</p>
+<pre><code>[root@localhost git]# chmod 700 .ssh  
+[root@localhost git]# cd .ssh  
+[root@localhost .ssh]# chmod 600 authorized_keys   </code></pre><h2 id="客户端再次-clone-远程仓库"><a href="#客户端再次-clone-远程仓库" class="headerlink" title="客户端再次 clone 远程仓库"></a>客户端再次 clone 远程仓库</h2><blockquote>
+<p>$ git clone <a href="mailto:git@192.168.56.101" target="_blank" rel="noopener">git@192.168.56.101</a>:/home/data/git/gittest.git</p>
+</blockquote>
+<p>项目已经成功 clone 了。</p>
+<h2 id="将git仓库文件自动同步到nginx文件目录下，可以通过外网访问"><a href="#将git仓库文件自动同步到nginx文件目录下，可以通过外网访问" class="headerlink" title="将git仓库文件自动同步到nginx文件目录下，可以通过外网访问"></a>将git仓库文件自动同步到nginx文件目录下，可以通过外网访问</h2><pre><code>[root@localhost git]# cd /home/data/git/gittest.git
+[root@localhost git]# touch post-receive
+[root@localhost git]# vi post-receive</code></pre><p>编辑这个 post-receive 文件：</p>
+<pre><code>/#!/bin/bash -l
+GIT_REPO=/home/data/git/gittest.git  
+TMP_GIT_CLONE=/home/data/git/gittest_tmp  
+PUBLIC_WWW=/home/data/git/gittest  
+rm -rf ${TMP_GIT_CLONE}  
+git clone $GIT_REPO $TMP_GIT_CLONE
+rm -rf ${PUBLIC_WWW}/*  
+cp -rf ${TMP_GIT_CLONE}/* ${PUBLIC_WWW}</code></pre><p>这个脚本可以实现完全更新，即先删除原网站内所有内容，再拷贝新仓库内容到网站目录，可以避免一些不必要的问题。</p>
+<p>还要给脚本加上执行权限：</p>
+<pre><code>[root@localhost git]# chmod +x post-receive</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://9aiplay.com/record/独立服务器自建Git仓库/" data-id="ck0m7gzow001al0bgs92rgu7k" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Git/">Git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/record/common-android-ui-library/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Android常用UI库(来源网络)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/record/LogCatDialog-0/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">LogCatDialog</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Adb/">Adb</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Adb/Utils/">Utils</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/AsyncTask/">AsyncTask</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/AutoSearchBug/">AutoSearchBug</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Fragment/">Fragment</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Fragment/Activity/">Activity</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Git/">Git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Handler/">Handler</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Java/">Java</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Java/线程/">线程</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Java/线程/join/">join</a></li></ul></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/Ui库/">Ui库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/View/">View</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/性能优化/">性能优化</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/重启app/">重启app</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/面试题/">面试题</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo/">Hexo</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/Git/">Git</a></li></ul></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Activity/">Activity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Adb/">Adb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AsyncTask/">AsyncTask</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AutoSearchBug/">AutoSearchBug</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Fragment/">Fragment</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/">Git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Handler/">Handler</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Logcat/">Logcat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ui库/">Ui库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Utils/">Utils</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/View/">View</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/join/">join</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/性能优化/">性能优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/线程/">线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/转载/">转载</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/重启app/">重启app</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试题/">面试题</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Activity/" style="font-size: 10px;">Activity</a> <a href="/tags/Adb/" style="font-size: 10px;">Adb</a> <a href="/tags/Android/" style="font-size: 20px;">Android</a> <a href="/tags/AsyncTask/" style="font-size: 10px;">AsyncTask</a> <a href="/tags/AutoSearchBug/" style="font-size: 10px;">AutoSearchBug</a> <a href="/tags/Fragment/" style="font-size: 10px;">Fragment</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/Handler/" style="font-size: 15px;">Handler</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Logcat/" style="font-size: 10px;">Logcat</a> <a href="/tags/Ui库/" style="font-size: 10px;">Ui库</a> <a href="/tags/Utils/" style="font-size: 10px;">Utils</a> <a href="/tags/View/" style="font-size: 10px;">View</a> <a href="/tags/join/" style="font-size: 10px;">join</a> <a href="/tags/性能优化/" style="font-size: 10px;">性能优化</a> <a href="/tags/线程/" style="font-size: 10px;">线程</a> <a href="/tags/转载/" style="font-size: 15px;">转载</a> <a href="/tags/重启app/" style="font-size: 10px;">重启app</a> <a href="/tags/面试题/" style="font-size: 10px;">面试题</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">February 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/record/GIT常用操作/">GIT常用操作</a>
+          </li>
+        
+          <li>
+            <a href="/record/Handler都没搞定，拿什么去跳槽！/">Handler都没搞定，拿什么去跳槽！</a>
+          </li>
+        
+          <li>
+            <a href="/record/Android大厂面试题锦集/">Android大厂面试题锦集</a>
+          </li>
+        
+          <li>
+            <a href="/record/hexo常用命令/">hexo常用命令</a>
+          </li>
+        
+          <li>
+            <a href="/record/Android获取Imageview上的图片/">Android获取Imageview上的图片</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 zhangyong<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
