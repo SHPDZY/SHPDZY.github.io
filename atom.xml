@@ -36,16 +36,16 @@
     <link href="http://9aiplay.com/record/b4de02b9/"/>
     <id>http://9aiplay.com/record/b4de02b9/</id>
     <published>2019-09-19T08:02:23.000Z</published>
-    <updated>2019-09-19T08:43:12.748Z</updated>
+    <updated>2019-09-19T08:58:38.132Z</updated>
     
-    <content type="html"><![CDATA[<video id="video" controls preload="none" poster="https://9aiplay.com/record/生活-小家伙越来越可爱了/5.jpg">      <source id="mp4" src="https://9aiplay.com/record/生活-小家伙越来越可爱了/5.mp4" type="video/mp4">      </video>]]></content>
+    <content type="html"><![CDATA[<video id="video" controls preload="none" poster="https://9aiplay.com/images/5.jpg">      <source id="mp4" src="https://9aiplay.com/video/5.mp4" type="video/mp4">      </video>]]></content>
     
     <summary type="html">
     
       
       
-        &lt;video id=&quot;video&quot; controls preload=&quot;none&quot; poster=&quot;https://9aiplay.com/record/生活-小家伙越来越可爱了/5.jpg&quot;&gt;
-      &lt;source id=&quot;mp4&quot; src=&quot;https://9aipla
+        &lt;video id=&quot;video&quot; controls preload=&quot;none&quot; poster=&quot;https://9aiplay.com/images/5.jpg&quot;&gt;
+      &lt;source id=&quot;mp4&quot; src=&quot;https://9aiplay.com/video/5
       
     
     </summary>
@@ -153,9 +153,9 @@
     <link href="http://9aiplay.com/record/b8d2a7a6/"/>
     <id>http://9aiplay.com/record/b8d2a7a6/</id>
     <published>2019-04-19T08:20:03.000Z</published>
-    <updated>2019-09-19T08:43:12.744Z</updated>
+    <updated>2019-09-19T08:59:47.757Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="在Markdown中加入视频"><a href="#在Markdown中加入视频" class="headerlink" title="在Markdown中加入视频"></a>在Markdown中加入视频</h2><p>直接复制下面代码放到需要展示视频的地方，记得修改成自己的封面图和视频连接</p><pre><code>&lt;video id=&quot;video&quot; controls=&quot;&quot; preload=&quot;none&quot; poster=&quot;https://9aiplay.com/record/生活-小家伙越来越可爱了/5.jpg&quot;&gt;  &lt;source id=&quot;mp4&quot; src=&quot;https://9aiplay.com/record/生活-小家伙越来越可爱了/5.mp4&quot; type=&quot;video/mp4&quot;&gt;  &lt;/video&gt;</code></pre><p>上面的代码效果如下：</p><video id="video" controls preload="none" poster="https://9aiplay.com/record/生活-小家伙越来越可爱了/5.jpg">      <source id="mp4" src="https://9aiplay.com/record/生活-小家伙越来越可爱了/5.mp4" type="video/mp4">      </video><p>##在Markdown中加入音频<br>直接复制下面代码放到需要播放音频的地方，记得修改成自己的音频连接</p><pre><code>&lt;audio id=&quot;audio&quot; controls=&quot;&quot; preload=&quot;none&quot;&gt;  &lt;source id=&quot;mp3&quot; src=&quot;https://9aiplay.com/audio/1.mp3&quot;&gt;  &lt;/audio&gt;</code></pre><p>上面的代码效果如下：</p><audio id="audio" controls preload="none">      <source id="mp3" src="https://9aiplay.com/audio/1.mp3">      </audio>]]></content>
+    <content type="html"><![CDATA[<h2 id="在Markdown中加入视频"><a href="#在Markdown中加入视频" class="headerlink" title="在Markdown中加入视频"></a>在Markdown中加入视频</h2><p>直接复制下面代码放到需要展示视频的地方，记得修改成自己的封面图和视频连接</p><pre><code>&lt;video id=&quot;video&quot; controls=&quot;&quot; preload=&quot;none&quot; poster=&quot;https://9aiplay.com/images/5.jpg&quot;&gt;  &lt;source id=&quot;mp4&quot; src=&quot;https://9aiplay.com/video/5.mp4&quot; type=&quot;video/mp4&quot;&gt;  &lt;/video&gt;</code></pre><p>上面的代码效果如下：</p><video id="video" controls preload="none" poster="https://9aiplay.com/images/5.jpg">      <source id="mp4" src="https://9aiplay.com/video/5.mp4" type="video/mp4">      </video><p>##在Markdown中加入音频<br>直接复制下面代码放到需要播放音频的地方，记得修改成自己的音频连接</p><pre><code>&lt;audio id=&quot;audio&quot; controls=&quot;&quot; preload=&quot;none&quot;&gt;  &lt;source id=&quot;mp3&quot; src=&quot;https://9aiplay.com/audio/1.mp3&quot;&gt;  &lt;/audio&gt;</code></pre><p>上面的代码效果如下：</p><audio id="audio" controls preload="none">      <source id="mp3" src="https://9aiplay.com/audio/1.mp3">      </audio>]]></content>
     
     <summary type="html">
     
