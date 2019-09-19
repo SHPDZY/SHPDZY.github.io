@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.jpg?v=5.1.4">
+
+
+
+
+
+
+  <meta name="keywords" content="Android,Adb,Utils,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="张永的个人博客" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="基本指令 进入指定设备 adb -s serialNumber shell 查看版本   adb version 查看日志  adb logcat 查看设备  adb devices 连接状态  adb get-state 动启ADB服务 adb start-server 停止ADB服务  adb kill-server 电脑推送到手机 adb push local remote 手机拉取到电脑">
+<meta name="keywords" content="Android,Adb,Utils">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android-ADB常用命令">
+<meta property="og:url" content="http://9aiplay.com/record/da31a3cc/index.html">
+<meta property="og:site_name" content="张永的个人博客">
+<meta property="og:description" content="基本指令 进入指定设备 adb -s serialNumber shell 查看版本   adb version 查看日志  adb logcat 查看设备  adb devices 连接状态  adb get-state 动启ADB服务 adb start-server 停止ADB服务  adb kill-server 电脑推送到手机 adb push local remote 手机拉取到电脑">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-07-03T02:12:53.671Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android-ADB常用命令">
+<meta name="twitter:description" content="基本指令 进入指定设备 adb -s serialNumber shell 查看版本   adb version 查看日志  adb logcat 查看设备  adb devices 连接状态  adb get-state 动启ADB服务 adb start-server 停止ADB服务  adb kill-server 电脑推送到手机 adb push local remote 手机拉取到电脑">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://9aiplay.com/record/da31a3cc/">
+
+
+
+
+
+  <title>Android-ADB常用命令 | 张永的个人博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">张永的个人博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/baidusitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>
+            
+            站点地图
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://9aiplay.com/record/da31a3cc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhangyong">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="张永的个人博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android-ADB常用命令</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-08T14:30:05+08:00">
+                2018-05-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/Adb/" itemprop="url" rel="index">
+                    <span itemprop="name">Adb</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/Adb/Utils/" itemprop="url" rel="index">
+                    <span itemprop="name">Utils</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="基本指令"><a href="#基本指令" class="headerlink" title="基本指令"></a>基本指令</h2><ul>
+<li>进入指定设备 <code>adb -s serialNumber shell</code></li>
+<li>查看版本   <code>adb version</code></li>
+<li>查看日志  <code>adb logcat</code></li>
+<li>查看设备  <code>adb devices</code></li>
+<li>连接状态  <code>adb get-state</code></li>
+<li>动启ADB服务 <code>adb start-server</code></li>
+<li>停止ADB服务  <code>adb kill-server</code></li>
+<li>电脑推送到手机 <code>adb push local remote</code></li>
+<li>手机拉取到电脑 <code>adb pull remote local</code></li>
+</ul>
+<h2 id="adb-shell下的am-与-pm"><a href="#adb-shell下的am-与-pm" class="headerlink" title="adb shell下的am 与 pm"></a>adb shell下的am 与 pm</h2><blockquote>
+<p>am和pm命令必须先切换到adb shell模式下才能使用</p>
+</blockquote>
+<h3 id="am"><a href="#am" class="headerlink" title="am"></a>am</h3><p>am全称activity manager，你能使用am去模拟各种系统的行为，例如去启动一个activity，强制停止进程，发送广播进程，修改设备屏幕属性等等。当你在adb shell命令下执行am命令</p>
+<pre><code>am &lt;comman&gt;</code></pre><ul>
+<li>启动app am start -n {packageName}/.{activityName}</li>
+<li>杀app的进程 am kill <packagename></packagename></li>
+<li>强制停止一切 am force-stop <packagename></packagename></li>
+<li>启动服务am startservice</li>
+<li>停止服务 am stopservice</li>
+<li>打开简书 am start -a android.intent.action.VIEW -d <a href="http://www.jianshu.com/" target="_blank" rel="noopener">http://www.jianshu.com/</a></li>
+<li>拨打10086 am start -a android.intent.action.CALL -d tel:10086</li>
+</ul>
+<h3 id="pm"><a href="#pm" class="headerlink" title="pm"></a>pm</h3><p>pm全称package manager，你能使用pm命令去模拟Android行为或者查询设备上的应用等，当你在adb shell命令下执行pm命令</p>
+<pre><code>pm &lt;command&gt;</code></pre><ul>
+<li>列出手机所有的包名 pm list packages</li>
+<li>安装/卸载 pm install/uninstall</li>
+</ul>
+<h2 id="模拟用户事件"><a href="#模拟用户事件" class="headerlink" title="模拟用户事件"></a>模拟用户事件</h2><ul>
+<li>文本输入:<code>adb shell input text &lt;string&gt;</code><ul>
+<li>例:手机端输出demo字符串，相应指令：<code>adb shell input &quot;demo&quot;.</code></li>
+</ul>
+</li>
+<li>键盘事件：<code>input keyevent &lt;KEYCODE&gt;，其中KEYCODE见本文结尾的附表</code><ul>
+<li>例:点击返回键，相应指令： <code>input keyevent 4.</code></li>
+</ul>
+</li>
+<li>点击事件：<code>input tap &lt;x&gt; &lt;y&gt;</code><ul>
+<li>例: 点击坐标（500，500），相应指令：<code>input tap 500 500.</code></li>
+</ul>
+</li>
+<li>滑动事件：<code>input swipe &lt;x1&gt; &lt;y1&gt; &lt;x2&gt; &lt;y2&gt; &lt;time&gt;</code><ul>
+<li>例:从坐标(300，500)滑动到(100，500)，相应指令： <code>input swipe 300 500 100 500.</code></li>
+<li>例:200ms时间从坐标(300，500)滑动到(100，500)，相应指令： <code>input swipe 300 500 100 500 200.</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="循环-shell命令"><a href="#循环-shell命令" class="headerlink" title="循环 shell命令:"></a>循环 shell命令:</h3><p>连接adb后输入 adb shell input tap X坐标 Y坐标</p>
+<blockquote>
+<p>左边 adb shell input tap 279 1897<br>右边 adb shell input tap 1085 1880</p>
+</blockquote>
+<pre><code>@echo off
+set var=0
+rem ************循环开始了
+:continue
+set /a var+=1
+echo 第%var%次循环
+adb shell input tap 279 1897
+adb shell input tap 1085 1880
+if %var% lss 0 goto continue
+rem ************循环结束了
+echo 循环执行完毕
+pause</code></pre><h3 id="执行shell以后的命令"><a href="#执行shell以后的命令" class="headerlink" title="执行shell以后的命令"></a>执行shell以后的命令</h3><pre><code>adb shell &lt;123.txt</code></pre><h2 id="logcat日志"><a href="#logcat日志" class="headerlink" title="logcat日志"></a>logcat日志</h2><ul>
+<li>显示包含的<code>logcat logcat \| grep &lt;str&gt;</code></li>
+<li>显示包含，并忽略大小写的<code>logcat logcat \| grep -i &lt;str&gt;</code></li>
+<li>读完所有log后返回，而不会一直等待 <code>logcat -d</code></li>
+<li>清空log并退出 <code>logcat -c</code></li>
+<li>打印最近的<code>count logcat -t &lt;count&gt;</code></li>
+<li>格式化输出Log，其中format有如下可选值：<code>logcat -v &lt;format&gt;</code></li>
+</ul>
+<blockquote>
+<p>brief — 显示优先级/标记和原始进程的PID (默认格式)<br>process — 仅显示进程PID<br>tag — 仅显示优先级/标记<br>thread — 仅显示进程：线程和优先级/标记<br>raw — 显示原始的日志信息，没有其他的元数据字段<br>time — 显示日期，调用时间，优先级/标记，PID<br>long —显示所有的元数据字段并且用空行分隔消息内容  </p>
+</blockquote>
+<h2 id="常用节点"><a href="#常用节点" class="headerlink" title="常用节点"></a>常用节点</h2><blockquote>
+<p>查看节点值，例如：<code>cat /sys/class/leds/lcd-backlight/brightness</code><br>修改节点值，例如：<code>echo 128 &gt; sys/class/leds/lcd-backlight/brightness</code></p>
+</blockquote>
+<ul>
+<li>LPM: <code>echo N &gt; /sys/modue/lpm_levels/parameters/sleep_disabled</code></li>
+<li>亮度：<code>/sys/class/leds/lcd-backlight/brightness</code></li>
+<li>CPU: <code>/sys/devices/system/cpu/cpu0/cpufreq</code></li>
+<li>GPU: <code>/sys/class/ kgsl/kgsl-3d0/gpuclk</code></li>
+<li>限频：<code>cat /data/pmlist.config</code></li>
+<li>电流：<code>cat /sys/class/power_supply/battery/current_now</code></li>
+<li>查看Power： <code>dumpsys power</code></li>
+<li>WIFI :<code>data/misc/wifi/wpa_supplicant.conf</code></li>
+<li>持有wake_lock:<code>echo a&gt; sys/power/wake_lock</code></li>
+<li>释放wake_lock:<code>echo a&gt; sys/power/wake_unlock</code></li>
+<li>查看Wakeup_source: <code>cat sys/kernel/debug/wakeup_sources</code></li>
+<li>Display(关闭AD):<code>mv /data/misc/display/calib.cfg /data/misc/display/calib.cfg.bak 重启</code></li>
+<li>关闭cabc：<code>echo 0 &gt; /sys/device/virtual/graphics/fb0/cabc_onoff</code></li>
+<li>打开cabc：<code>echo 3 &gt; /sys/device/virtual/graphics/fb0/cabc_onoff</code></li>
+<li>systrace：<code>sdk/tools/monitor</code></li>
+<li>限频：<code>echo /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1497600</code></li>
+<li>当出现read-only 且 remount命令不管用时：<code>adb shell mount -o rw,remount /</code></li>
+<li>进入9008模式： <code>adb reboot edl</code></li>
+<li>查看高通gpio：<code>sys/class/private/tlmm</code>或者 <code>sys/private/tlmm</code></li>
+<li>查看gpio占用情况：<code>sys/kernle/debug/gpio</code></li>
+</ul>
+<h2 id="远程ADB"><a href="#远程ADB" class="headerlink" title="远程ADB"></a>远程ADB</h2><p>为避免使用数据线，可通过wifi通信，前提是手机与PC处于同一局域网</p>
+<h3 id="启动方法"><a href="#启动方法" class="headerlink" title="启动方法"></a>启动方法</h3><pre><code>adb tcpip 5555  //这一步，必须通过数据线把手机与PC连接后再执行  
+adb connect &lt;手机IP&gt;</code></pre><h3 id="停止方法"><a href="#停止方法" class="headerlink" title="停止方法"></a>停止方法</h3><pre><code>adb disconnect //断开wifi连接
+adb usb //切换到usb模式</code></pre><h2 id="常用操作示例"><a href="#常用操作示例" class="headerlink" title="常用操作示例"></a>常用操作示例</h2><ul>
+<li>查看当前 <code>ls</code></li>
+<li>打印当前路径 <code>pwd</code></li>
+<li>查看当前连接的设备 <code>adb devices</code></li>
+<li>终止adb服务进程 <code>adb kill-server</code></li>
+<li>重启adb服务进程 <code>adb start-server</code></li>
+<li>PID是:8607 查看某个进程的日志 <code>adb logcat -v process |grep 8607</code></li>
+<li>清理缓存 <code>logcat -c</code></li>
+<li>打印xys标签log <code>adb logcat -s xys</code></li>
+<li>打印192.168.56.101:5555设备里的xys标签log <code>adb -s 192.168.56.101:5555 logcat -s xys</code></li>
+<li>打印在ActivityManager标签里包含start的日志 <code>adb logcat -s ActivityManager | findstr &quot;START&quot;</code></li>
+</ul>
+<blockquote>
+<p>“-s”选项 : 设置输出日志的标签, 只显示该标签的日志;<br>“-f”选项 : 将日志输出到文件, 默认输出到标准输出流中, -f 参数执行不成功;<br>“-r”选项 : 按照每千字节输出日志, 需要 -f 参数, 不过这个命令没有执行成功;<br>“-n”选项 : 设置日志输出的最大数目, 需要 -r 参数, 这个执行 感觉 跟 adb logcat 效果一样;<br>“-v”选项 : 设置日志的输出格式, 注意只能设置一项;<br>“-c”选项 : 清空所有的日志缓存信息;<br>“-d”选项 : 将缓存的日志输出到屏幕上, 并且不会阻塞;<br>“-t”选项 : 输出最近的几行日志, 输出完退出, 不阻塞;<br>“-g”选项 : 查看日志缓冲区信息;<br>“-b”选项 : 加载一个日志缓冲区, 默认是 main, 下面详解;<br>“-B”选项 : 以二进制形式输出日志;  </p>
+</blockquote>
+<ul>
+<li>重启机器 <code>adb reboot</code></li>
+<li>获取序列号 <code>adb get-serialno</code></li>
+<li>重启到bootloader，即刷机模式 <code>adb reboot bootloader</code></li>
+<li>重启到recovery，即恢复模式 <code>adb reboot recovery</code></li>
+<li>安装APK：adb install <apkfile> //比如：<code>adb install baidu.apk</code></apkfile></li>
+<li>安装apk到sd卡： adb install -s <apkfile> // 比如：<code>adb install -s baidu.apk</code></apkfile></li>
+<li>卸载APK：adb uninstall <package> //比如：<code>adb uninstall com.baidu.search</code></package></li>
+<li>获取机器MAC地址 <code>adb shell cat /sys/class/net/wlan0/address</code></li>
+<li>启动应用：adb shell am start -n <package_name>/.<activity_class_name> <ul>
+<li>例如:<code>adb shell am start -n yf.o2o.store/yf.o2o.store.activity.LoginActivity</code></li>
+</ul>
+</activity_class_name></package_name></li>
+<li>查看占用内存排序  <code>adb shell top</code></li>
+<li>查看占用内存前6的app：<code>adb shell top -m 6</code></li>
+<li>刷新一次内存信息，然后返回：<code>adb shell top -n 1</code></li>
+<li>查询各进程内存使用情况：<code>adb shell procrank</code></li>
+<li>杀死一个进程：<code>adb shell kill [pid]</code></li>
+<li>查看进程列表：<code>adb shell ps</code></li>
+<li>查看指定进程状态：<code>adb shell ps -x [PID]</code></li>
+<li>查看后台services信息： <code>adb shell service list</code></li>
+<li>查看当前内存占用： <code>adb shell cat /proc/meminfo</code></li>
+<li>查看IO内存分区：<code>adb shell cat /proc/iomem</code></li>
+<li>将system分区重新挂载为可读写分区：<code>adb remount</code></li>
+<li>从本地复制文件到设备： <code>adb push &lt;local&gt; &lt;remote&gt;</code></li>
+<li>从设备复制文件到本地： <code>adb pull &lt;remote&gt; &lt;local&gt;</code></li>
+<li>列出目录下的文件和文件夹，等同于dos中的dir命令：<code>adb shell ls</code></li>
+<li>进入文件夹，等同于dos中的cd 命令：<code>adb shell cd &lt;folder&gt;</code></li>
+<li>重命名文件： <code>adb shell rename path/oldfilename path/newfilename</code></li>
+<li>删除system/avi.apk： <code>adb shell rm /system/avi.apk</code></li>
+<li>删除文件夹及其下面所有文件：<code>adb shell rm -r &lt;folder&gt;</code></li>
+<li>移动文件：<code>adb shell mv path/file newpath/file</code></li>
+<li>设置文件权限：<code>adb shell chmod 777 /system/fonts/DroidSansFallback.ttf</code></li>
+<li>新建文件夹：<code>adb shell mkdir path/foldelname</code></li>
+<li>查看文件内容：<code>adb shell cat &lt;file&gt;</code></li>
+<li>查看wifi密码：<code>adb shell cat /data/misc/wifi/*.conf</code></li>
+<li>清除log缓存：<code>adb logcat -c</code></li>
+<li>查看bug报告：<code>adb bugreport</code></li>
+<li>获取设备名称：<code>adb shell cat /system/build.prop</code></li>
+<li>查看ADB帮助：<code>adb help</code></li>
+<li>跑monkey：<code>adb shell monkey -v -p your.package.name 500</code> <code>adb -s 192.168.244.151:5555 shell monkey -v -p com.bolexim 500</code></li>
+</ul>
+<h2 id="附表"><a href="#附表" class="headerlink" title="附表"></a>附表</h2><p>下表中， 箭头左边为keycode值，箭头右边为keycode的含义，部分用中文标注</p>
+<pre><code>0 –&gt; “KEYCODE_UNKNOWN”
+1 –&gt; “KEYCODE_MENU”
+2 –&gt; “KEYCODE_SOFT_RIGHT”
+3 –&gt; “KEYCODE_HOME” //Home键
+4 –&gt; “KEYCODE_BACK” //返回键
+5 –&gt; “KEYCODE_CALL” 
+6 –&gt; “KEYCODE_ENDCALL” 
+7 –&gt; “KEYCODE_0” //数字键0
+8 –&gt; “KEYCODE_1” 
+9 –&gt; “KEYCODE_2” 
+10 –&gt; “KEYCODE_3”
+11 –&gt; “KEYCODE_4” 
+12 –&gt; “KEYCODE_5” 
+13 –&gt; “KEYCODE_6” 
+14 –&gt; “KEYCODE_7” 
+15 –&gt; “KEYCODE_8” 
+16 –&gt; “KEYCODE_9” 
+17 –&gt; “KEYCODE_STAR” 
+18 –&gt; “KEYCODE_POUND” 
+19 –&gt; “KEYCODE_DPAD_UP” 
+20 –&gt; “KEYCODE_DPAD_DOWN” 
+21 –&gt; “KEYCODE_DPAD_LEFT”
+22 –&gt; “KEYCODE_DPAD_RIGHT” 
+23 –&gt; “KEYCODE_DPAD_CENTER” 
+24 –&gt; “KEYCODE_VOLUME_UP” //音量键+
+25 –&gt; “KEYCODE_VOLUME_DOWN” //音量键-
+26 –&gt; “KEYCODE_POWER” //Power键
+27 –&gt; “KEYCODE_CAMERA” 
+28 –&gt; “KEYCODE_CLEAR”
+29 –&gt; “KEYCODE_A” //字母键A
+30 –&gt; “KEYCODE_B” 
+31 –&gt; “KEYCODE_C” 
+32 –&gt; “KEYCODE_D” 
+33 –&gt; “KEYCODE_E” 
+34 –&gt; “KEYCODE_F” 
+35 –&gt; “KEYCODE_G”
+36 –&gt; “KEYCODE_H”
+37 –&gt; “KEYCODE_I”
+38 –&gt; “KEYCODE_J” 
+39 –&gt; “KEYCODE_K” 
+40 –&gt; “KEYCODE_L” 
+41 –&gt; “KEYCODE_M”
+42 –&gt; “KEYCODE_N” 
+43 –&gt; “KEYCODE_O” 
+44 –&gt; “KEYCODE_P” 
+45 –&gt; “KEYCODE_Q” 
+46 –&gt; “KEYCODE_R”
+47 –&gt; “KEYCODE_S”
+48 –&gt; “KEYCODE_T” 
+49 –&gt; “KEYCODE_U” 
+50 –&gt; “KEYCODE_V” 
+51 –&gt; “KEYCODE_W” 
+52 –&gt; “KEYCODE_X”
+53 –&gt; “KEYCODE_Y” 
+54 –&gt; “KEYCODE_Z”
+55 –&gt; “KEYCODE_COMMA” 
+56 –&gt; “KEYCODE_PERIOD”
+57 –&gt; “KEYCODE_ALT_LEFT” 
+58 –&gt; “KEYCODE_ALT_RIGHT” 
+59 –&gt; “KEYCODE_SHIFT_LEFT” 
+60 –&gt; “KEYCODE_SHIFT_RIGHT”
+61 -&gt; “KEYCODE_TAB” 
+62 –&gt; “KEYCODE_SPACE” 
+63 –&gt; “KEYCODE_SYM” 
+64 –&gt; “KEYCODE_EXPLORER” 
+65 –&gt; “KEYCODE_ENVELOPE” 
+66 –&gt; “KEYCODE_ENTER” //回车键
+67 –&gt; “KEYCODE_DEL” 
+68 –&gt; “KEYCODE_GRAVE” 
+69 –&gt; “KEYCODE_MINUS” 
+70 –&gt; “KEYCODE_EQUALS” 
+71 –&gt; “KEYCODE_LEFT_BRACKET” 
+72 –&gt; “KEYCODE_RIGHT_BRACKET” 
+73 –&gt; “KEYCODE_BACKSLASH” 
+74 –&gt; “KEYCODE_SEMICOLON” 
+75 –&gt; “KEYCODE_APOSTROPHE”
+76 –&gt; “KEYCODE_SLASH” 
+77 –&gt; “KEYCODE_AT” 
+78 –&gt; “KEYCODE_NUM” 
+79 –&gt; “KEYCODE_HEADSETHOOK” 
+80 –&gt; “KEYCODE_FOCUS”
+81 –&gt; “KEYCODE_PLUS”
+82 –&gt; “KEYCODE_MENU”
+83 –&gt; “KEYCODE_NOTIFICATION”
+84 –&gt; “KEYCODE_SEARCH”</code></pre>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    zhangyong
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://9aiplay.com/record/da31a3cc/" title="Android-ADB常用命令">http://9aiplay.com/record/da31a3cc/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/Adb/" rel="tag"># Adb</a>
+          
+            <a href="/tags/Utils/" rel="tag"># Utils</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/record/141ab2e4/" rel="next" title="Android Handler的使用">
+                <i class="fa fa-chevron-left"></i> Android Handler的使用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/record/f9979545/" rel="prev" title="转载:Android 性能优化">
+                转载:Android 性能优化 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zNzU4Ny8xNDExOQ=="></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">zhangyong</p>
+              <p class="site-description motion-element" itemprop="description">欢迎来到张永的个人博客，一个关注Android,H5前端,java后端技术,爱分享网络资源,分享学到的知识,分享生活的博客。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/SHPDZY" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.jianshu.com/u/4b7453146e54" target="_blank" title="简书">
+                      
+                        <i class="fa fa-fw fa-book"></i>简书</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://blog.csdn.net/qq82001945" target="_blank" title="CSDN">
+                      
+                        <i class="fa fa-fw fa-book"></i>CSDN</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:15000855025@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本指令"><span class="nav-number">1.</span> <span class="nav-text">基本指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#adb-shell下的am-与-pm"><span class="nav-number">2.</span> <span class="nav-text">adb shell下的am 与 pm</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#am"><span class="nav-number">2.1.</span> <span class="nav-text">am</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pm"><span class="nav-number">2.2.</span> <span class="nav-text">pm</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模拟用户事件"><span class="nav-number">3.</span> <span class="nav-text">模拟用户事件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#循环-shell命令"><span class="nav-number">3.1.</span> <span class="nav-text">循环 shell命令:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#执行shell以后的命令"><span class="nav-number">3.2.</span> <span class="nav-text">执行shell以后的命令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#logcat日志"><span class="nav-number">4.</span> <span class="nav-text">logcat日志</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用节点"><span class="nav-number">5.</span> <span class="nav-text">常用节点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#远程ADB"><span class="nav-number">6.</span> <span class="nav-text">远程ADB</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#启动方法"><span class="nav-number">6.1.</span> <span class="nav-text">启动方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#停止方法"><span class="nav-number">6.2.</span> <span class="nav-text">停止方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用操作示例"><span class="nav-number">7.</span> <span class="nav-text">常用操作示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附表"><span class="nav-number">8.</span> <span class="nav-text">附表</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhangyong</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
