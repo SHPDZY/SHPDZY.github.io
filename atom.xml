@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://9aiplay.com/"/>
-  <updated>2019-09-19T08:07:21.821Z</updated>
+  <updated>2019-09-19T08:18:13.455Z</updated>
   <id>http://9aiplay.com/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="http://9aiplay.com/record/%E7%94%9F%E6%B4%BB-%E5%B0%8F%E5%AE%B6%E4%BC%99%E8%B6%8A%E6%9D%A5%E8%B6%8A%E5%8F%AF%E7%88%B1%E4%BA%86/"/>
     <id>http://9aiplay.com/record/生活-小家伙越来越可爱了/</id>
     <published>2019-09-19T08:02:23.000Z</published>
-    <updated>2019-09-19T08:07:21.821Z</updated>
+    <updated>2019-09-19T08:18:13.455Z</updated>
     
     <content type="html"><![CDATA[<video id="video" controls preload="none" poster="https://9aiplay.com/record/生活-小家伙越来越可爱了/5.jpg">      <source id="mp4" src="https://9aiplay.com/record/生活-小家伙越来越可爱了/5.mp4" type="video/mp4">      </video>]]></content>
     
@@ -35,6 +35,8 @@
     
     </summary>
     
+    
+      <category term="生活" scheme="http://9aiplay.com/categories/%E7%94%9F%E6%B4%BB/"/>
     
     
       <category term="生活" scheme="http://9aiplay.com/tags/%E7%94%9F%E6%B4%BB/"/>
@@ -66,9 +68,9 @@
     
       <category term="Android" scheme="http://9aiplay.com/tags/Android/"/>
     
-      <category term="Handler" scheme="http://9aiplay.com/tags/Handler/"/>
-    
       <category term="转载" scheme="http://9aiplay.com/tags/%E8%BD%AC%E8%BD%BD/"/>
+    
+      <category term="Handler" scheme="http://9aiplay.com/tags/Handler/"/>
     
   </entry>
   
@@ -128,6 +130,32 @@
     
     
       <category term="Android" scheme="http://9aiplay.com/tags/Android/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>如何在Markdown中插入音视频</title>
+    <link href="http://9aiplay.com/record/%E5%A6%82%E4%BD%95%E5%9C%A8Markdown%E4%B8%AD%E6%8F%92%E5%85%A5%E9%9F%B3%E8%A7%86%E9%A2%91/"/>
+    <id>http://9aiplay.com/record/如何在Markdown中插入音视频/</id>
+    <published>2019-04-19T08:20:03.000Z</published>
+    <updated>2019-09-19T08:32:42.029Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="在Markdown中加入视频"><a href="#在Markdown中加入视频" class="headerlink" title="在Markdown中加入视频"></a>在Markdown中加入视频</h2><p>直接复制下面代码放到需要展示视频的地方，记得修改成自己的封面图和视频连接</p><pre><code>&lt;video id=&quot;video&quot; controls=&quot;&quot; preload=&quot;none&quot; poster=&quot;https://9aiplay.com/record/生活-小家伙越来越可爱了/5.jpg&quot;&gt;  &lt;source id=&quot;mp4&quot; src=&quot;https://9aiplay.com/record/生活-小家伙越来越可爱了/5.mp4&quot; type=&quot;video/mp4&quot;&gt;  &lt;/video&gt;</code></pre><p>上面的代码效果如下：</p><video id="video" controls preload="none" poster="https://9aiplay.com/record/生活-小家伙越来越可爱了/5.jpg">      <source id="mp4" src="https://9aiplay.com/record/生活-小家伙越来越可爱了/5.mp4" type="video/mp4">      </video><p>##在Markdown中加入音频<br>直接复制下面代码放到需要播放音频的地方，记得修改成自己的音频连接</p><pre><code>&lt;audio id=&quot;audio&quot; controls=&quot;&quot; preload=&quot;none&quot;&gt;  &lt;source id=&quot;mp3&quot; src=&quot;https://9aiplay.com/audio/1.mp3&quot;&gt;  &lt;/audio&gt;</code></pre><p>上面的代码效果如下：</p><audio id="audio" controls preload="none">      <source id="mp3" src="https://9aiplay.com/audio/1.mp3">      </audio>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;在Markdown中加入视频&quot;&gt;&lt;a href=&quot;#在Markdown中加入视频&quot; class=&quot;headerlink&quot; title=&quot;在Markdown中加入视频&quot;&gt;&lt;/a&gt;在Markdown中加入视频&lt;/h2&gt;&lt;p&gt;直接复制下面代码放到需要展示视频的地方，记得
+      
+    
+    </summary>
+    
+    
+      <category term="Markdown" scheme="http://9aiplay.com/categories/Markdown/"/>
+    
+    
+      <category term="Utils" scheme="http://9aiplay.com/tags/Utils/"/>
     
   </entry>
   
