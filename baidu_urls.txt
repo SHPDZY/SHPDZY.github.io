@@ -1,5 +1,5 @@
 http://9aiplay.com/record/GIT常用操作/
 http://9aiplay.com/record/Handler都没搞定，拿什么去跳槽！/
 http://9aiplay.com/record/Android大厂面试题锦集/
+http://9aiplay.com/record/Android进阶之光笔记-Retrofit/
 http://9aiplay.com/record/hexo常用命令/
-http://9aiplay.com/record/Android获取Imageview上的图片/
